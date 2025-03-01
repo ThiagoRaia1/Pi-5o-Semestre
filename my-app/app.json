@@ -27,6 +27,9 @@
     "plugins": [
       "expo-router",
       "expo-secure-store"
-    ]
+    ],
+    "expo": {
+      "scheme": "nome-do-projeto"
+    }
   }
 }
