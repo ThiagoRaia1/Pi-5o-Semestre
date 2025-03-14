@@ -10,6 +10,7 @@ export default function Home() {
       <Text>Bem-vindo, {user.email}!</Text>
       <Link href="/sensors">Sensores</Link>
       <Link href="/camera">Câmera</Link>
+      <Link href="/alunos">Alunos</Link>
     </View>
   )
 }
@@ -20,5 +21,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
     padding: 20,
+    gap: 20,
   }
 })
