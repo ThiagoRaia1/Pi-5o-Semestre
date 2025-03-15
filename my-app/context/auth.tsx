@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from 'react'
 import { router } from 'expo-router'
 import firebaseApp from '../app/services/firebase'
 import { initializeAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import * as SecureStore from 'expo-secure-store'
 
 interface IUser {
   email: string
@@ -31,7 +32,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const auth = initializeAuth(firebaseApp)
     signInWithEmailAndPassword(auth, user.email, user.password)
-      .then(() => {
+      .then((userCredential) => {
+        SecureStore.setItemAsync('token', userCredential.user?.uid || '') // Aqui estamos guardando no SecureStore o ID do usuário que o Firebase retorna
         router.push('Home')
       })
       .catch(() => {
