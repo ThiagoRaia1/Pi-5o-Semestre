@@ -7,10 +7,12 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text>Bem-vindo, {user.email}!</Text>
-      <Link href="/sensors">Sensores</Link>
-      <Link href="/camera">Câmera</Link>
-      <Link href="/alunos">Alunos</Link>
+      <View style={{gap: 20}}>
+        <Text>Bem-vindo, {user.email}!</Text>
+        <Link href="/sensors">Sensores</Link>
+        <Link href="/camera">Câmera</Link>
+        <Link href="/alunos">Alunos</Link>
+      </View>
     </View>
   )
 }
@@ -19,8 +21,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#fff',
     padding: 20,
-    gap: 20,
   }
 })
