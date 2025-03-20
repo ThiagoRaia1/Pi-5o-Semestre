@@ -4,7 +4,7 @@ import * as SecureStore from 'expo-secure-store'
 import { useEffect, useState } from 'react'
 import MenuLateral from '../../components/menuLateral'
 
-export default function Home() {
+export default function Agenda() {
 /*
   const { user } = useAuth()
   const [token, setToken] = useState('') // Criamos um estado para armazenar o token
