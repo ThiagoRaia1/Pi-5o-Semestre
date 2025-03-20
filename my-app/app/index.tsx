@@ -1,6 +1,7 @@
 import { View, StyleSheet } from 'react-native'
 import { Button, TextInput, Text } from 'react-native-paper'
 import { useAuth } from '../context/auth'
+import { Link } from 'expo-router';
 
 export default function Login() {
   const { user, handleLogin, setUser } = useAuth()
@@ -13,9 +14,10 @@ export default function Login() {
       </View>
 
       <View style={styles.rightSide}>
-        <TextInput label="Email" style={styles.input} onChangeText={text => setUser({...user, email: text})} />
+        <TextInput label="Email" style={styles.input} onChangeText={text => setUser({...user, email: text})}/>
         <TextInput label="Senha" secureTextEntry={true} style={styles.input} onChangeText={text => setUser({...user, password: text})} />
         <Button mode="contained" style={styles.input} onPress={handleLogin}>Entrar</Button>
+        <Link href="/menuPrincipal/agenda">Entrar</Link>
       </View>
 
     </View>

@@ -1,4 +1,3 @@
-// context/auth.tsx
 import React, { createContext, useContext, useState } from 'react'
 import { router } from 'expo-router'
 import firebaseApp from '../app/services/firebase'
@@ -34,7 +33,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithEmailAndPassword(auth, user.email, user.password)
       .then((userCredential) => {
         SecureStore.setItemAsync('token', userCredential.user?.uid || '') // Aqui estamos guardando no SecureStore o ID do usuário que o Firebase retorna
-        router.push('Home')
+        router.push('/menuPrincipal/agenda')
       })
       .catch(() => {
         alert('Usuário ou senha inválidos')
