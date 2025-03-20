@@ -35,7 +35,7 @@ export default function MenuLateral() {
                 </View>
             </View>
             <View style={[styles.rightSide, {backgroundColor: 'blue'}]}>  
-                <Link href="/menuPrincipal/agenda" style={styles.input}>Entrar</Link>
+                <Link href="/menuPrincipal/agenda">Entrar</Link>
             </View>
         </View>
     );
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
         flex: 2,
         justifyContent: 'center', // Centraliza a mensagem verticalmente
         alignItems: 'center', // Centraliza no eixo vertical
+        height: '100%',
     },
     input: {
         marginBottom: 20, // Espaço entre os campos
