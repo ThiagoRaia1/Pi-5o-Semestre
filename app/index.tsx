@@ -17,7 +17,7 @@ export default function Login() {
         <TextInput label="Email" style={styles.input} onChangeText={text => setUser({...user, email: text})}/>
         <TextInput label="Senha" secureTextEntry={true} style={styles.input} onChangeText={text => setUser({...user, password: text})} />
         <Button mode="contained" style={styles.input} onPress={handleLogin}>Entrar</Button>
-        <Link href="/menuPrincipal/agenda">Entrar</Link>
+        <Link href="/menuPrincipal/agenda" style={styles.input}>Entrar</Link>
       </View>
 
     </View>
