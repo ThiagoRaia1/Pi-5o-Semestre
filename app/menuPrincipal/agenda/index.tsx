@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import { useAuth } from '../../../context/auth'
 import * as SecureStore from 'expo-secure-store'
 import { useEffect, useState } from 'react'
-import MenuLateral from '../../components/menuLateral'
+import MenuLateral from '../../components/menuInferior'
 
 export default function Agenda() {
 /*
