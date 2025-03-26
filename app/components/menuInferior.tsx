@@ -5,6 +5,8 @@ import { useAuth } from "../../context/auth";
 export default function MenuLateral() {
     const { user } = useAuth();
     const pathname = usePathname(); // Obtendo o caminho atual da página
+    const iconsWidth = 40
+    const iconsHeight = iconsWidth
 
     // Função para verificar se o link é a página atual
     const isActive = (route: string) => {
@@ -13,27 +15,33 @@ export default function MenuLateral() {
 
     return (
         <View style={styles.container}>
-            <View style={{justifyContent: 'center', alignItems: 'center', flex: 8, gap: 20, backgroundColor: 'yellow', width: '100%'}}>     
+            <View style={{justifyContent: 'center', alignItems: 'center', flex: 8, gap: 20, backgroundColor: '#f2f2f0', width: '100%'}}>     
                 <Link href="/">
                     Logout
                 </Link>
             </View>
             <View style={styles.bottomMenu}>  
+
                 <Link href="/menuPrincipal/agenda" style={isActive("/menuPrincipal/agenda")}>
-                    Agenda
+                    <Image source={require('../../assets/agendaIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/>
                 </Link>
+
                 <Link href="/menuPrincipal/alunos" style={isActive("/menuPrincipal/alunos")}>
-                        Alunos
+                    <Image source={require('../../assets/alunosIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/>
                 </Link>
+
                 <Link href="/menuPrincipal/equipe">
-                    <Image source={require('../../assets/icon.png')} style={{width: 40, height: 40, borderRadius: 20}}/>
+                    <Image source={require('../../assets/userIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 20}}/>
                 </Link>
+
                 <Link href="/menuPrincipal/equipe" style={isActive("/menuPrincipal/equipe")}>
-                        Equipe
+                    <Image source={require('../../assets/equipeIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/>
                 </Link>
+
                 <Link href="/menuPrincipal/financeiro" style={isActive("/menuPrincipal/financeiro")}>
-                    Financeiro
+                    <Image source={require('../../assets/financeiroIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/>
                 </Link>
+
             </View>
         </View>
     );
@@ -46,23 +54,17 @@ const styles = StyleSheet.create({
         alignItems: 'center', // Centraliza no eixo vertical
     },
     activeLink: {
-        fontWeight: 'bold',
-        color: 'white', // Ou qualquer outra cor ou estilo que você queira aplicar
+        fontWeight: '800',
+        color: 'black', // Ou qualquer outra cor ou estilo que você queira aplicar
         // backgroundColor: 'black'
     },
     bottomMenu: {
         flexDirection: 'row',
-        backgroundColor: 'blue', 
+        backgroundColor: '#A1DCFF', 
         flex: 1, 
         width: '100%',
-        paddingHorizontal: 40,
+        paddingHorizontal: 45,
         justifyContent: 'space-between',
         alignItems: 'center',
-    },
-    input: {
-        marginBottom: 20, // Espaço entre os campos
-        width: '70%', // Largura dos inputs
-        alignSelf: 'center', // Alinha o botão no centro
-        marginRight: 20,
     },
 });
