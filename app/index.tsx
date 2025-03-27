@@ -1,50 +1,127 @@
-import { View, StyleSheet } from 'react-native'
-import { Button, TextInput, Text } from 'react-native-paper'
-import { useAuth } from '../context/auth'
+import React from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Feather } from '@expo/vector-icons'; // icones do Expo
+import { useAuth } from '../context/auth';
 import { Link } from 'expo-router';
 
-export default function Login() {
+export default function TelaLogin() {
   const { user, handleLogin, setUser } = useAuth()
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Image 
+            source={require('../assets/fundoLogin.jpeg')}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+          />
+          <View style={[styles.content, { marginTop: 100 }]}>
+            <View style={styles.inputContainer}>
+              <Feather name="mail" size={20} color="black" style={styles.icon} />
+              <TextInput 
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#ccc"
+                onChangeText={text => setUser({...user, email: text})}
+              />
+            </View>
 
-      {/* Mensagem no lado esquerdo */}
-      <View style={styles.leftSide}>
-        <Text style={{fontSize: 60}}>Plenitude Pilates</Text>
-      </View>
+            <View style={styles.inputContainer}>
+              <Feather name="lock" size={20} color="black" style={styles.icon} />
+              <TextInput 
+                style={styles.input}
+                placeholder="Senha"
+                placeholderTextColor="#ccc"
+                secureTextEntry={true}
+                onChangeText={text => setUser({...user, password: text})}
+              />
+            </View>
 
-      <View style={styles.rightSide}>
-        <TextInput label="Email" style={styles.input} onChangeText={text => setUser({...user, email: text})}/>
-        <TextInput label="Senha" secureTextEntry={true} style={styles.input} onChangeText={text => setUser({...user, password: text})} />
-        <Button mode="contained" style={styles.input} onPress={handleLogin}>Entrar</Button>
-        <Link href="/menuPrincipal/agenda" style={styles.input}>Entrar</Link>
-      </View>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
 
-    </View>
+            <TouchableOpacity>
+              <Link href="/menuPrincipal/agenda" style={styles.link}>Esqueci minha senha</Link> 
+            </TouchableOpacity>
+
+            {/* Texto posicionado no canto inferior direito */}
+            <TouchableOpacity style={styles.registerLink}>
+              <Text style={[styles.link, {textAlign: 'right'}]}>Não possui uma conta?{'\n'}Clique aqui!</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row', // Coloca os elementos lado a lado
-    justifyContent: 'center', // Centraliza os elementos no eixo horizontal
-    alignItems: 'center', // Centraliza no eixo vertical
   },
-  leftSide: {
-    flex: 1,
-    justifyContent: 'center', // Alinha os itens ao topo da tela
-    alignItems: 'center', // Centraliza no eixo vertical
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
-  rightSide: {
+  content: {
     flex: 1,
-    justifyContent: 'center', // Centraliza a mensagem verticalmente
-    alignItems: 'center', // Centraliza no eixo vertical
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+  title: {
+    fontSize: 26,
+    color: '#black',
+    marginBottom: 50,
+    fontWeight: '600',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#319594',
+    borderRadius: 20,
+  },
+  icon: {
+    marginRight: 10,
   },
   input: {
-    marginBottom: 20, // Espaço entre os campos
-    width: '70%', // Largura dos inputs
-    alignSelf: 'center', // Alinha o botão no centro
-    marginRight: 20,
+    flex: 1,
+    height: 50,
+    color: 'black',
+  },
+  button: {
+    backgroundColor: '#319594',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 100,
+    marginTop: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  link: {
+    color: 'black',
+    marginTop: 20,
+    textDecorationLine: 'underline',
+  },
+  registerLink: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
   },
 });

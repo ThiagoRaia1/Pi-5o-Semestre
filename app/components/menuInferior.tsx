@@ -23,23 +23,28 @@ export default function MenuLateral() {
             <View style={styles.bottomMenu}>  
 
                 <Link href="/menuPrincipal/agenda" style={isActive("/menuPrincipal/agenda")}>
-                    <Image source={require('../../assets/agendaIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/>
+                    {/* <Image source={require('../../assets/agendaIcon.png')} 
+                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/> */}
                 </Link>
 
                 <Link href="/menuPrincipal/alunos" style={isActive("/menuPrincipal/alunos")}>
-                    <Image source={require('../../assets/alunosIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/>
+                    {/* <Image source={require('../../assets/alunosIcon.png')} 
+                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/> */}
                 </Link>
 
                 <Link href="/menuPrincipal/equipe">
-                    <Image source={require('../../assets/userIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 20}}/>
+                    {/* <Image source={require('../../assets/userIcon.png')} 
+                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 20}}/> */}
                 </Link>
 
                 <Link href="/menuPrincipal/equipe" style={isActive("/menuPrincipal/equipe")}>
-                    <Image source={require('../../assets/equipeIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/>
+                    {/* <Image source={require('../../assets/equipeIcon.png')} 
+                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/> */}
                 </Link>
 
                 <Link href="/menuPrincipal/financeiro" style={isActive("/menuPrincipal/financeiro")}>
-                    <Image source={require('../../assets/financeiroIcon.png')} style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/>
+                    {/* <Image source={require('../../assets/financeiroIcon.png')} 
+                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/> */}
                 </Link>
 
             </View>
