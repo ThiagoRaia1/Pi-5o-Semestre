@@ -11,31 +11,30 @@ export default function MenuLateral() {
         return pathname === route ? styles.activeLink : null; // Comparando com o pathname atual
     };
 
+    const textStyle = { fontSize: 30 }; // Estilo para os textos
+
     return (
         <View style={styles.container}>
-            <View style={[styles.leftSide, { gap: 20 },  {backgroundColor: 'yellow'}]}>
-                <View style={{marginLeft: 30, gap: 20}}>
+            <View style={[styles.leftSide,  {backgroundColor: '#C7DEEE'}]}>
+                <View style={{ gap: 20, alignItems: 'center' }}>
                     <Image source={require('../../assets/icon.png')} style={{width: 200, height: 200}}/>
                     <Text>Bem-vindo, {user.email}!</Text>
-                    <Link href="/menuPrincipal/agenda" style={isActive("/menuPrincipal/agenda")}>
+                    <Link href="/menuPrincipal/agenda" style={[isActive("/menuPrincipal/agenda"), textStyle]}>
                         Agenda
                     </Link>
-                    <Link href="/menuPrincipal/alunos" style={isActive("/menuPrincipal/alunos")}>
+                    <Link href="/menuPrincipal/alunos" style={[isActive("/menuPrincipal/alunos"), textStyle]}>
                         Alunos
                     </Link>
-                    <Link href="/menuPrincipal/equipe" style={isActive("/menuPrincipal/equipe")}>
+                    <Link href="/menuPrincipal/equipe" style={[isActive("/menuPrincipal/equipe"), textStyle]}>
                         Equipe
                     </Link>
-                    <Link href="/menuPrincipal/financeiro" style={isActive("/menuPrincipal/financeiro")}>
+                    <Link href="/menuPrincipal/financeiro" style={[isActive("/menuPrincipal/financeiro"), textStyle]}>
                         Financeiro
                     </Link>
-                    <Link href="/">
+                    <Link href="/" style={[textStyle, {textAlign: 'center'}]}>
                         Logout
                     </Link>
                 </View>
-            </View>
-            <View style={[styles.rightSide, {backgroundColor: 'blue'}]}>  
-                <Link href="/menuPrincipal/agenda">Entrar</Link>
             </View>
         </View>
     );
@@ -50,25 +49,18 @@ const styles = StyleSheet.create({
     },
     activeLink: {
         fontWeight: 'bold',
-        color: 'blue', // Ou qualquer outra cor ou estilo que você queira aplicar
-        // backgroundColor: 'black'
+        backgroundColor:'rgb(112, 107, 179)',
+        paddingVertical: 5,  // Aumenta o espaço acima/abaixo do texto
+        paddingHorizontal: 70, // Aumenta o espaço nas laterais
+        borderRadius: 100,  // Deixa os cantos arredondados
+        textAlign: 'center', // Garante que o texto fique centralizado
+        color: 'white',
+        width: 300, // Define um tamanho mínimo para todos os botões
     },
     leftSide: {
         flex: 1,
         justifyContent: 'center', // Alinha os itens ao topo da tela
-        alignItems: 'flex-start', // Centraliza no eixo vertical
-        height: '100%',
-    },
-    rightSide: {
-        flex: 2,
-        justifyContent: 'center', // Centraliza a mensagem verticalmente
         alignItems: 'center', // Centraliza no eixo vertical
         height: '100%',
-    },
-    input: {
-        marginBottom: 20, // Espaço entre os campos
-        width: '70%', // Largura dos inputs
-        alignSelf: 'center', // Alinha o botão no centro
-        marginRight: 20,
     },
 });
