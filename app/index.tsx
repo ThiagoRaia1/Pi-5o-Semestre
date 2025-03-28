@@ -46,7 +46,7 @@ export default function TelaLogin() {
             </TouchableOpacity>
 
             <TouchableOpacity>
-              <Link href="/menuPrincipal/agenda" style={styles.link}>Esqueci minha senha</Link> 
+              <Link href="/menuPrincipal/inicio" style={styles.link}>Esqueci minha senha</Link> 
             </TouchableOpacity>
 
             {/* Texto posicionado no canto inferior direito */}
