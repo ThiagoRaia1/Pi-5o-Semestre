@@ -1,10 +1,4 @@
-import { View, Image, Text, StyleSheet } from 'react-native'
-import { useAuth } from '../../../context/auth'
-import * as SecureStore from 'expo-secure-store'
-import { useEffect, useState } from 'react'
-import MenuLateral from '../../components/menuInferior'
-import { Link, usePathname } from 'expo-router'
-import { Feather } from '@expo/vector-icons'; // icones do Expo
+import { View, StyleSheet } from 'react-native'
 import MenuInferior from '../../components/menuInferior'
 import LogoutButton from '../../components/logoutButton'
 

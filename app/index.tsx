@@ -75,12 +75,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 30,
   },
-  title: {
-    fontSize: 26,
-    color: '#black',
-    marginBottom: 50,
-    fontWeight: '600',
-  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -110,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: 'white',
     fontSize: 20,
     fontWeight: '700',
   },
