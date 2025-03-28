@@ -1,11 +1,12 @@
 import { Link, usePathname } from "expo-router";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { useAuth } from "../../context/auth";
+import { Feather } from '@expo/vector-icons'; // icones do Expo
 
-export default function MenuLateral() {
+export default function MenuInferior() {
     const { user } = useAuth();
     const pathname = usePathname(); // Obtendo o caminho atual da página
-    const iconsWidth = 40
+    const iconsWidth = 60
     const iconsHeight = iconsWidth
 
     // Função para verificar se o link é a página atual
@@ -15,36 +16,33 @@ export default function MenuLateral() {
 
     return (
         <View style={styles.container}>
-            <View style={{justifyContent: 'center', alignItems: 'center', flex: 8, gap: 20, backgroundColor: '#f2f2f0', width: '100%'}}>     
-                <Link href="/">
-                    Logout
-                </Link>
-            </View>
-            <View style={styles.bottomMenu}>  
-
-                <Link href="/menuPrincipal/agenda" style={isActive("/menuPrincipal/agenda")}>
-                    {/* <Image source={require('../../assets/agendaIcon.png')} 
-                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/> */}
+            <View style={styles.bottomMenu}>
+                <Link href='/menuPrincipal/inicio' style={{ marginTop: 10 }}>
+                    <View style={{ alignItems: 'center' }}>
+                        <Feather name="home" size={iconsWidth} color="white" />
+                        <Text style={styles.icon}>INÍCIO</Text>
+                    </View>
                 </Link>
 
-                <Link href="/menuPrincipal/alunos" style={isActive("/menuPrincipal/alunos")}>
-                    {/* <Image source={require('../../assets/alunosIcon.png')} 
-                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/> */}
+                <Link href='/menuPrincipal/aulas' style={{ marginTop: 10 }}>
+                    <View style={{ alignItems: 'center' }}>
+                        <Feather name="clock" size={iconsWidth} color="white" />
+                        <Text style={styles.icon}>AULAS</Text>
+                    </View>
                 </Link>
 
-                <Link href="/menuPrincipal/equipe">
-                    {/* <Image source={require('../../assets/userIcon.png')} 
-                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 20}}/> */}
+                <Link href='/menuPrincipal/agendar' style={{ marginTop: 10 }}>
+                    <View style={{ alignItems: 'center' }}>
+                        <Feather name="calendar" size={iconsWidth} color="white" />
+                        <Text style={styles.icon}>AGENDAR</Text>
+                    </View>
                 </Link>
 
-                <Link href="/menuPrincipal/equipe" style={isActive("/menuPrincipal/equipe")}>
-                    {/* <Image source={require('../../assets/equipeIcon.png')} 
-                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/> */}
-                </Link>
-
-                <Link href="/menuPrincipal/financeiro" style={isActive("/menuPrincipal/financeiro")}>
-                    {/* <Image source={require('../../assets/financeiroIcon.png')} 
-                    style={{width: iconsWidth, height: iconsHeight, borderRadius: 0}}/> */}
+                <Link href='/menuPrincipal/perfil' style={{ marginTop: 10 }}>
+                    <View style={{ alignItems: 'center' }}>
+                        <Feather name="user" size={iconsWidth} color="white" />
+                        <Text style={styles.icon}>PERFIL</Text>
+                    </View>
                 </Link>
 
             </View>
@@ -65,11 +63,21 @@ const styles = StyleSheet.create({
     },
     bottomMenu: {
         flexDirection: 'row',
-        backgroundColor: '#A1DCFF', 
-        flex: 1, 
+        backgroundColor: '#2AA69F',
+        flex: 1,
         width: '100%',
-        paddingHorizontal: 45,
+        paddingHorizontal: 20,
         justifyContent: 'space-between',
-        alignItems: 'center',
     },
+    backgroundImage: {
+        flex: 8,
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+    },
+    icon: {
+        color: 'white',
+        fontWeight: 900,
+        fontSize: 18
+    }
 });
