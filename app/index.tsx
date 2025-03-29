@@ -51,7 +51,7 @@ export default function TelaLogin() {
 
             {/* Texto posicionado no canto inferior direito */}
             <TouchableOpacity style={styles.registerLink}>
-              <Text style={[styles.link, {textAlign: 'right'}]}>Não possui uma conta?{'\n'}Clique aqui!</Text>
+              <Link href='/cadastro' style={[styles.link, {textAlign: 'right'}]}>Não possui uma conta?{'\n'}Clique aqui!</Link>
             </TouchableOpacity>
           </View>
         </View>
