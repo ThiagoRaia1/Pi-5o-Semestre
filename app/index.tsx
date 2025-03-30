@@ -8,55 +8,48 @@ export default function TelaLogin() {
   const { user, handleLogin, setUser } = useAuth()
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <Image 
-            source={require('../assets/fundoLogin.jpeg')}
-            style={styles.backgroundImage}
-            resizeMode="cover"
+    <View style={styles.container}>
+      <Image
+        source={require('../assets/fundoLogin.jpeg')}
+        style={styles.backgroundImage}
+        resizeMode="stretch"
+      />
+      <View style={[styles.content, { marginTop: 100 }]}>
+        <View style={styles.inputContainer}>
+          <Feather name="mail" size={20} color="black" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#ccc"
+            onChangeText={text => setUser({ ...user, email: text })}
           />
-          <View style={[styles.content, { marginTop: 100 }]}>
-            <View style={styles.inputContainer}>
-              <Feather name="mail" size={20} color="black" style={styles.icon} />
-              <TextInput 
-                style={styles.input}
-                placeholder="Email"
-                placeholderTextColor="#ccc"
-                onChangeText={text => setUser({...user, email: text})}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Feather name="lock" size={20} color="black" style={styles.icon} />
-              <TextInput 
-                style={styles.input}
-                placeholder="Senha"
-                placeholderTextColor="#ccc"
-                secureTextEntry={true}
-                onChangeText={text => setUser({...user, password: text})}
-              />
-            </View>
-
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity>
-              <Link href="/menuPrincipal/inicio" style={styles.link}>Esqueci minha senha</Link> 
-            </TouchableOpacity>
-
-            {/* Texto posicionado no canto inferior direito */}
-            <TouchableOpacity style={styles.registerLink}>
-              <Link href='/cadastro' style={[styles.link, {textAlign: 'right'}]}>Não possui uma conta?{'\n'}Clique aqui!</Link>
-            </TouchableOpacity>
-          </View>
         </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+
+        <View style={styles.inputContainer}>
+          <Feather name="lock" size={20} color="black" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            placeholderTextColor="#ccc"
+            secureTextEntry={true}
+            onChangeText={text => setUser({ ...user, password: text })}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity>
+          <Link href="/menuPrincipal/inicio" style={styles.link}>Esqueci minha senha</Link>
+        </TouchableOpacity>
+
+        {/* Texto posicionado no canto inferior direito */}
+        <TouchableOpacity style={styles.registerLink}>
+          <Link href='/cadastro' style={[styles.link, { textAlign: 'right' }]}>Não possui uma conta?{'\n'}Clique aqui!</Link>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 

@@ -5,91 +5,79 @@ import { Link } from 'expo-router';
 export default function TelaCadastro() {
 
     return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.container}>
-                    <Image
-                        source={require('../../assets/fundoCadastro.jpg')}
-                        style={styles.backgroundImage}
-                        resizeMode="cover"
+        <View style={styles.container}>
+            <Image
+                source={require('../../assets/fundoCadastro.jpg')}
+                style={styles.backgroundImage}
+                resizeMode="stretch"
+            />
+            <View style={styles.content}>
+                <Text style={[styles.textCampo, { fontSize: 30, marginBottom: 20, fontWeight: 900 }]}>MATRICULE-SE</Text>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textCampo}>CPF</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite aqui"
+                        placeholderTextColor="#ccc"
                     />
-                    <View style={styles.content}>
-                        <Text style={[styles.textCampo, { fontSize: 40, marginBottom: 40 }]}>MATRICULE-SE</Text>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.textCampo}>CPF</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Digite aqui"
-                                placeholderTextColor="#ccc"
-                            />
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.textCampo}>NOME{'\n'}COMPLETO</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Digite aqui"
-                                placeholderTextColor="#ccc"
-                                secureTextEntry={true}
-                            />
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.textCampo}>E-MAIL</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Digite aqui"
-                                placeholderTextColor="#ccc"
-                                secureTextEntry={true}
-                            />
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.textCampo}>SEXO</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Digite aqui"
-                                placeholderTextColor="#ccc"
-                                secureTextEntry={true}
-                            />
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.textCampo}>CELULAR</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Digite aqui"
-                                placeholderTextColor="#ccc"
-                                secureTextEntry={true}
-                            />
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.textCampo}>DATA DE{'\n'}NASCIMENTO</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Digite aqui"
-                                placeholderTextColor="#ccc"
-                                secureTextEntry={true}
-                            />
-                        </View>
-
-                        {/* mudar para fazer a navegação com  expo-router*/}
-                        <TouchableOpacity style={[styles.button, {marginTop: 40}]}>
-                            <Link href='/' style={styles.buttonText}>Finalizar</Link>
-                        </TouchableOpacity>
-
-                        {/* Texto posicionado no canto inferior direito */}
-                        <TouchableOpacity style={styles.registerLink}>
-                            <Link href='/' style={[styles.link, { textAlign: 'right' }]}>Voltar</Link>
-                        </TouchableOpacity>
-                    </View>
                 </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textCampo}>NOME{'\n'}COMPLETO</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite aqui"
+                        placeholderTextColor="#ccc"
+                    />
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textCampo}>E-MAIL</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite aqui"
+                        placeholderTextColor="#ccc"
+                    />
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textCampo}>SEXO</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite aqui"
+                        placeholderTextColor="#ccc"
+                    />
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textCampo}>CELULAR</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite aqui"
+                        placeholderTextColor="#ccc"
+                    />
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.textCampo}>DATA DE{'\n'}NASCIMENTO</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite aqui"
+                        placeholderTextColor="#ccc"
+                    />
+                </View>
+
+                {/* mudar para fazer a navegação com  expo-router*/}
+                <TouchableOpacity style={[styles.button, { marginTop: 20 }]}>
+                    <Link href='/' style={styles.buttonText}>Finalizar</Link>
+                </TouchableOpacity>
+
+                {/* Texto posicionado no canto inferior direito */}
+                <TouchableOpacity style={styles.registerLink}>
+                    <Link href='/' style={[styles.link, { textAlign: 'right' }]}>Voltar</Link>
+                </TouchableOpacity>
+            </View>
+        </View>
     );
 }
 
@@ -115,17 +103,16 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginTop: 10,
         width: '100%',
-        gap: 40,
         justifyContent: 'space-between',
     },
     input: {
         flex: 1,
-        height: 50,
+        height: 45,
         color: 'black',
         borderWidth: 1,
         borderColor: '#319594',
         borderRadius: 20,
-        maxWidth: '70%',
+        maxWidth: '55%',
         paddingLeft: 15, // Move o placeholder um pouco para a direita
     },
     button: {
@@ -155,7 +142,7 @@ const styles = StyleSheet.create({
     textCampo: {
         color: '#4B366D',
         textAlign: 'justify',
-        fontWeight: 700,
-        fontSize: 18,
+        fontWeight: 400,
+        fontSize: 16,
     }
 });

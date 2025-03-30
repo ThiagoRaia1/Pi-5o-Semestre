@@ -1,12 +1,20 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Image, Text } from 'react-native'
 import MenuInferior from '../../components/menuInferior'
 import LogoutButton from '../../components/logoutButton'
 
 export default function Agendar() {
   return (
     <View style={styles.container}>
-      <LogoutButton/>
-      <MenuInferior/>
+      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 7, gap: 20, backgroundColor: '#f2f2f0', width: '100%' }}>
+        <Image
+          source={require('../../../assets/fundoInicio.png')}
+          style={styles.backgroundImage}
+          resizeMode='stretch'
+        />
+        <LogoutButton />
+        <Text style={{ fontSize: 40 }}>Agendar</Text>
+      </View>
+      <MenuInferior />
     </View>
   )
 }
