@@ -79,7 +79,6 @@ export default function Início() {
             {'\n'}
             7:30
           </Text>
-
         </View>
       </View>
       <MenuInferior></MenuInferior>
