@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, ScrollView } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import { Calendar } from 'react-native-calendars';
 import MenuInferior from '../../components/menuInferior';
+import LogoutButton from '../../components/logoutButton';
 
 const SchedulingScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
@@ -37,7 +38,7 @@ const SchedulingScreen = () => {
           style={styles.backgroundImage}
           resizeMode="stretch"
         />
-        
+        <LogoutButton/>
         {/* Título */}
         <Text style={styles.title}>Escolha data e horário</Text>
 

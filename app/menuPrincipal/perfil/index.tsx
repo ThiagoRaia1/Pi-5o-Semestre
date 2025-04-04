@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import MenuInferior from '../../components/menuInferior';
+import LogoutButton from '../../components/logoutButton';
 
 export default function Perfil() {
   const [isEditing, setIsEditing] = useState(false);
@@ -42,46 +43,45 @@ export default function Perfil() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-        <View style={[styles.contentlogo, isEditing && { marginTop: -40 }]}>
-
-
-          <View style={[styles.content, isEditing && {gap: -10}]}>
-            <View style={styles.titulo}>
-              <Image source={require('../../../assets/userIcon.png')} style={styles.userphoto} />
-              <Text style={[styles.textCampo, { fontSize: 40 }]}>Aluno</Text>
-            </View>
-
-            {Object.keys(userInfo).map((key) => (
-              <View key={key} style={styles.inputContainer}>
-                <Text style={styles.textCampo}>{key.toUpperCase()}</Text>
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={userInfo[key]}
-                    onChangeText={(value) => handleChange(key, value)}
-                  />
-                ) : (
-                  <Text>{userInfo[key]}</Text>
-                )}
-              </View>
-            ))}
-
-            <TouchableOpacity
-              style={[styles.button, { marginTop: 30 }]}
-              onPress={isEditing ? () => setIsEditing(false) : handleEdit}
-            >
-              <Text style={styles.buttonText}>{isEditing ? 'Salvar' : 'Editar'}</Text>
-            </TouchableOpacity>
-
-            {isEditing && (
-              <TouchableOpacity style={[styles.button, { backgroundColor: 'red', marginTop: 10 }]} onPress={handleCancel}>
-                <Text style={styles.buttonText}>Cancelar</Text>
-              </TouchableOpacity>
-            )}
-
+      <View style={[styles.contentlogo, isEditing && { marginTop: -40 }]}>
+        <View style={[styles.content, isEditing && { gap: -10 }]}>
+      <LogoutButton style={{marginTop: 10}}/>
+          <View style={styles.titulo}>
+            <Image source={require('../../../assets/userIcon.png')} style={styles.userphoto} />
+            <Text style={[styles.textCampo, { fontSize: 40 }]}>Aluno</Text>
           </View>
+
+          {Object.keys(userInfo).map((key) => (
+            <View key={key} style={styles.inputContainer}>
+              <Text style={styles.textCampo}>{key.toUpperCase()}</Text>
+              {isEditing ? (
+                <TextInput
+                  style={styles.input}
+                  value={userInfo[key]}
+                  onChangeText={(value) => handleChange(key, value)}
+                />
+              ) : (
+                <Text>{userInfo[key]}</Text>
+              )}
+            </View>
+          ))}
+
+          <TouchableOpacity
+            style={[styles.button, { marginTop: 30 }]}
+            onPress={isEditing ? () => setIsEditing(false) : handleEdit}
+          >
+            <Text style={styles.buttonText}>{isEditing ? 'Salvar' : 'Editar'}</Text>
+          </TouchableOpacity>
+
+          {isEditing && (
+            <TouchableOpacity style={[styles.button, { backgroundColor: 'red', marginTop: 10 }]} onPress={handleCancel}>
+              <Text style={styles.buttonText}>Cancelar</Text>
+            </TouchableOpacity>
+          )}
+
         </View>
-        {!isEditing && <MenuInferior />}
+      </View>
+      {!isEditing && <MenuInferior />}
     </KeyboardAvoidingView>
   );
 }
