@@ -45,7 +45,7 @@ export default function Perfil() {
     >
       <View style={[styles.contentlogo, isEditing && { marginTop: -40 }]}>
         <View style={[styles.content, isEditing && { gap: -10 }]}>
-      <LogoutButton style={{marginTop: 10}}/>
+      {!isEditing && <LogoutButton style={{marginTop: 10}}/>}
           <View style={styles.titulo}>
             <Image source={require('../../../assets/userIcon.png')} style={styles.userphoto} />
             <Text style={[styles.textCampo, { fontSize: 40 }]}>Aluno</Text>

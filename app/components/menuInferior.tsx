@@ -1,48 +1,38 @@
 import { Link, usePathname } from "expo-router";
 import { View, Text, StyleSheet } from "react-native";
-import { Feather } from '@expo/vector-icons'; // icones do Expo
+import { Feather } from '@expo/vector-icons';
+
+type FeatherIconName = keyof typeof Feather.glyphMap;
+
+const menuItems: { href: string; icon: FeatherIconName; label: string }[] = [
+    { href: '/menuPrincipal/inicio', icon: 'home', label: 'INÍCIO' },
+    { href: '/menuPrincipal/aulas', icon: 'clock', label: 'AULAS' },
+    { href: '/menuPrincipal/agendar', icon: 'calendar', label: 'AGENDAR' },
+    { href: '/menuPrincipal/perfil', icon: 'user', label: 'PERFIL' },
+];
+
 
 export default function MenuInferior() {
-    const iconsWidth = 55
+    const iconsWidth = 55;
+    const pathname = usePathname();
 
-    const pathname = usePathname(); // Obtendo o caminho atual da página
-    // Função para verificar se o link é a página atual
     const isActive = (route: string) => {
-        return pathname === route ? styles.activeLink : null; // Comparando com o pathname atual
+        return pathname === route;
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.bottomMenu}>
-
-                <Link href='/menuPrincipal/inicio' style={{ marginTop: 10 }}>
-                    <View style={[isActive("/menuPrincipal/inicio"), { alignItems: 'center' }]}>
-                        <Feather name="home" size={iconsWidth} color="white" />
-                        <Text style={styles.icon}>INÍCIO</Text>
-                    </View>
-                </Link>
-
-                <Link href='/menuPrincipal/aulas' style={{ marginTop: 10 }}>
-                    <View style={[isActive("/menuPrincipal/aulas"), { alignItems: 'center' }]}>
-                        <Feather name="clock" size={iconsWidth} color="white" />
-                        <Text style={styles.icon}>AULAS</Text>
-                    </View>
-                </Link>
-
-                <Link href='/menuPrincipal/agendar' style={{ marginTop: 10 }}>
-                    <View style={[isActive("/menuPrincipal/agendar"), { alignItems: 'center' }]}>
-                        <Feather name="calendar" size={iconsWidth} color="white" />
-                        <Text style={styles.icon}>AGENDAR</Text>
-                    </View>
-                </Link>
-
-                <Link href='/menuPrincipal/perfil' style={{ marginTop: 10 }}>
-                    <View style={[isActive("/menuPrincipal/perfil"), { alignItems: 'center' }]}>
-                        <Feather name="user" size={iconsWidth} color="white" />
-                        <Text style={styles.icon}>PERFIL</Text>
-                    </View>
-                </Link>
-
+                {menuItems.map(({ href, icon, label }) => (
+                    <Link key={href} href={href} style={{ marginTop: 10 }}>
+                        <View style={styles.menuItem}>
+                            <View style={[styles.iconContainer, isActive(href) && styles.activeLink]}>
+                                <Feather name={icon} size={iconsWidth} color="white" />
+                                <Text style={styles.icon}>{label}</Text>
+                            </View>
+                        </View>
+                    </Link>
+                ))}
             </View>
         </View>
     );
@@ -52,22 +42,30 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    activeLink: {
-        backgroundColor: '#69C1BC',
-        paddingHorizontal: 20, // Aumenta o espaço nas laterais
-        borderRadius: 20,  // Deixa os cantos arredondados
-    },
     bottomMenu: {
         flexDirection: 'row',
         backgroundColor: '#2AA69F',
-        flex: 1,
         width: '100%',
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    menuItem: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    iconContainer: {
+        alignItems: 'center',
+        paddingVertical: 5,
+        borderRadius: 20,
+        width: 75,
+    },
+    activeLink: {
+        backgroundColor: '#69C1BC',
     },
     icon: {
         color: 'white',
-        fontWeight: 900,
-        fontSize: 18
+        fontWeight: '900',
+        fontSize: 18,
     }
 });
