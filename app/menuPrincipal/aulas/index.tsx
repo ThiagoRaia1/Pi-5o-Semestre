@@ -37,6 +37,7 @@ export default function Aulas() {
         </Text>
 
         {/* Adicionar ScrollView */}
+        {/* Usar map para renderizar todas as aulas */}
         <View style={styles.aulaContent}>
           <View style={styles.dateContent}>
             <Text style={styles.dateText}>Quarta-feira, 02 de abril{'\n'}7:30</Text>

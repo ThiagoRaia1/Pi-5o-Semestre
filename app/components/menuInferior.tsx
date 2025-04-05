@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         justifyContent: 'space-between',
         alignItems: 'center',
+        zIndex: 1,
     },
     menuItem: {
         flex: 1,
