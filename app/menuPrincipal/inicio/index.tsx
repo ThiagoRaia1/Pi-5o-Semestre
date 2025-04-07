@@ -71,8 +71,6 @@ export default function Início() {
             borderColor: '#ccc',
             textAlign: 'center',
             textAlignVertical: 'center',
-            justifyContent: 'center',
-            alignItems: 'center',
             padding: 10, // Evita que o texto fique colado na borda
           }}>
             Quarta-feira, 02 de abril:

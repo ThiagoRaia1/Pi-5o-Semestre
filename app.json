@@ -4,7 +4,6 @@
     "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -17,9 +16,9 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.thiagoraia.myapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -28,8 +27,13 @@
       "expo-router",
       "expo-secure-store"
     ],
-    "expo": {
-      "scheme": "nome-do-projeto"
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ccbea3e2-ae98-450a-8fd0-ca103a7631f1"
+      }
     }
   }
 }

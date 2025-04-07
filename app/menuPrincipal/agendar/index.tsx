@@ -1,9 +1,37 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Text, Button } from 'react-native-paper';
-import { Calendar } from 'react-native-calendars';
 import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
+
+LocaleConfig.locales['pt-br'] = {
+  monthNames: [
+    'Janeiro', 'Fevereiro', 'Março',
+    'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro',
+    'Outubro', 'Novembro', 'Dezembro'
+  ],
+  monthNamesShort: [
+    'Jan', 'Fev', 'Mar',
+    'Abr', 'Mai', 'Jun',
+    'Jul', 'Ago', 'Set',
+    'Out', 'Nov', 'Dez'
+  ],
+  dayNames: [
+    'Domingo',
+    'Segunda-feira',
+    'Terça-feira',
+    'Quarta-feira',
+    'Quinta-feira',
+    'Sexta-feira',
+    'Sábado'
+  ],
+  dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+  today: 'Hoje'
+};
+
+LocaleConfig.defaultLocale = 'pt-br';
 
 const SchedulingScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
@@ -23,9 +51,9 @@ const SchedulingScreen = () => {
 
   // Divide os horários em grupos de 4
   const chunkTimes = (arr, size) => {
-    return arr.reduce((acc, _, i) => 
+    return arr.reduce((acc, _, i) =>
       i % size === 0 ? [...acc, arr.slice(i, i + size)] : acc
-    , []);
+      , []);
   };
 
   const groupedTimes = chunkTimes(times, 4);
@@ -38,7 +66,7 @@ const SchedulingScreen = () => {
           style={styles.backgroundImage}
           resizeMode="stretch"
         />
-        <LogoutButton/>
+        <LogoutButton />
         {/* Título */}
         <Text style={styles.title}>Escolha data e horário</Text>
 
@@ -58,32 +86,40 @@ const SchedulingScreen = () => {
 
         {/* Seleção de Horário com Scroll */}
         <ScrollView style={styles.scrollContainer}>
-            {groupedTimes.map((row, rowIndex) => (
-              <View key={rowIndex} style={[
-                styles.timeRow, 
-                row.length < 4 && styles.justifyRow // Justifica última linha se houver menos de 4 itens
-              ]}>
-                {row.map((time) => (
-                  <Button
-                    key={time}
-                    mode={selectedTime === time ? 'contained' : 'outlined'}
-                    style={[styles.timeButton, selectedTime === time && styles.selectedTime]}
-                    onPress={() => setSelectedTime(time)}
-                  >
-                    {time}
-                  </Button>
-                ))}
-              </View>
-            ))}
+          {groupedTimes.map((row, rowIndex) => (
+            <View key={rowIndex} style={[
+              styles.timeRow,
+              row.length < 4 && styles.justifyRow // Justifica última linha se houver menos de 4 itens
+            ]}>
+              {row.map((time) => (
+                <Button
+                  key={time}
+                  mode={selectedTime === time ? 'contained' : 'outlined'}
+                  style={[styles.timeButton, selectedTime === time && styles.selectedTime]}
+                  labelStyle={{ marginHorizontal: -20, fontSize: 18 }}
+                  onPress={() => setSelectedTime(time)}
+                >
+                  {time}
+                </Button>
+              ))}
+            </View>
+          ))}
         </ScrollView>
 
         {/* Botão Agendar */}
         <Button
           mode="contained"
           style={styles.agendarButton}
-          labelStyle={{ color: 'white' }} // Muda a cor do texto
-          onPress={() => alert(`Agendado para ${selectedDate} às ${selectedTime}`)}
-          disabled={!selectedDate || !selectedTime} // Bloqueia se nada for selecionado
+          labelStyle={{ color: 'white', fontSize: 18 }} // Muda a cor do texto
+          onPress={() => {
+            if (selectedDate == '' || selectedTime == '') {
+              alert(`Escolha uma data e um horário.`)
+            } else {
+              alert(`Agendado para ${selectedDate} às ${selectedTime}`)
+            }
+          }
+          }
+        /* disabled={!selectedDate || !selectedTime} // Bloqueia se nada for selecionado */
         >
           Agendar
         </Button>
