@@ -1,63 +1,45 @@
-import { View, StyleSheet, Image, Text } from 'react-native'
+import { View, StyleSheet, Image, Text, ScrollView } from 'react-native'
 import MenuInferior from '../../components/menuInferior'
 import LogoutButton from '../../components/logoutButton';
+
+function renderAula() {
+  return (
+    <View style={styles.aulaContent}>
+      <View style={styles.dateContent}>
+        <Text style={styles.dateText}>Quarta-feira, 02 de abril{'\n'}7:30</Text>
+      </View>
+      <View style={styles.cancelarContent}>
+        <Text style={styles.cancelarText}>CANCELAR</Text>
+      </View>
+    </View>
+  )
+}
 
 export default function Aulas() {
   return (
     <View style={styles.container}>
-      {/* Fazer com que a posição do menuInferior seja absoluta */}
-      <View style={
-        {
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 7,
-          gap: 20,
-          backgroundColor: '#f2f2f0',
-          width: '100%',
-        }
-      }>
-        <Image
-          source={require('../../../assets/fundoAgendar.png')}
-          style={styles.backgroundImage}
-          resizeMode="stretch"
-        />
+      {/* Parte principal com fundo e conteúdo */}
+      <Image
+        source={require('../../../assets/fundoAgendar.png')}
+        style={styles.backgroundImage}
+        resizeMode="stretch"
+      />
+      <View style={styles.mainContent}>
         <LogoutButton />
-        <Text style={
-          {
-            fontSize: 30,
-            color: 'white',
-            fontWeight: 900,
-            paddingHorizontal: 20,
-            textShadowColor: 'black', // Cor da borda
-            textShadowOffset: { width: 1, height: 1 }, // Espessura da sombra
-            textShadowRadius: 20, // Suaviza a borda
-          }
-        }>
-          PRÓXIMAS AULAS
-        </Text>
-
-        {/* Adicionar ScrollView */}
-        {/* Usar map para renderizar todas as aulas */}
-        <View style={styles.aulaContent}>
-          <View style={styles.dateContent}>
-            <Text style={styles.dateText}>Quarta-feira, 02 de abril{'\n'}7:30</Text>
-          </View>
-          <View style={styles.cancelarContent}>
-            <Text style={styles.cancelarText}>CANCELAR</Text>
-          </View>
-        </View>
-
-        <View style={styles.aulaContent}>
-          <View style={styles.dateContent}>
-            <Text style={styles.dateText}>Quarta-feira, 02 de abril{'\n'}7:30</Text>
-          </View>
-          <View style={styles.cancelarContent}>
-            <Text style={styles.cancelarText}>CANCELAR</Text>
-          </View>
-        </View>
-        
+        <Text style={styles.title}>PRÓXIMAS AULAS</Text>
+        {/* ScrollView corrigida */}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          persistentScrollbar={true}
+        >
+          {/* Renderiza 10 componentes de aula */}
+          {Array.from({ length: 10 }).map((_, index) => (
+            <View key={index}>{renderAula()}</View>
+          ))}
+        </ScrollView>
       </View>
-      <MenuInferior></MenuInferior>
+      <MenuInferior />
     </View>
   )
 }
@@ -66,22 +48,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  mainContent: {
+    flex: 7,
+    backgroundColor: '#f2f2f0aa', // transparente para ver o fundo
+    paddingHorizontal: 20,
+    paddingTop: 80,
+    paddingBottom: 20
+  },
   backgroundImage: {
-    flex: 8,
     position: 'absolute',
     width: '100%',
     height: '100%',
+    zIndex: -1,
+  },
+  title: {
+    fontSize: 30,
+    color: 'white',
+    fontWeight: '900',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    textAlign: 'center',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 20,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    borderWidth: 2,
+    borderColor: '#ccc',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    paddingVertical: 20,
+    gap: 20,
+    borderRadius: 10,
   },
   aulaContent: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    marginHorizontal: 20,
-    minWidth: '90%',
-    height: '20%',
+    marginHorizontal: 10,
     borderRadius: 30,
     borderColor: '#ccc',
     borderWidth: 2,
     justifyContent: 'space-between',
+    height: 100,
   },
   dateContent: {
     padding: 10,
@@ -91,22 +106,21 @@ const styles = StyleSheet.create({
   },
   dateText: {
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 20,
     color: '#4B366D',
-    fontWeight: 400,
-    margin: -10
+    fontWeight: '400',
+    margin: -10,
   },
   cancelarContent: {
-    padding: 10,
     justifyContent: 'center',
     backgroundColor: '#F16E6E',
     borderRadius: 30,
-    width: '30%'
+    width: '30%',
   },
   cancelarText: {
     textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16
-  }
+    fontSize: 14,
+  },
 })

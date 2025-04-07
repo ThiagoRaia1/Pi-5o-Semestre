@@ -1,9 +1,37 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Text, Button } from 'react-native-paper';
-import { Calendar } from 'react-native-calendars';
 import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
+
+LocaleConfig.locales['pt-br'] = {
+  monthNames: [
+    'Janeiro', 'Fevereiro', 'Março',
+    'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro',
+    'Outubro', 'Novembro', 'Dezembro'
+  ],
+  monthNamesShort: [
+    'Jan', 'Fev', 'Mar',
+    'Abr', 'Mai', 'Jun',
+    'Jul', 'Ago', 'Set',
+    'Out', 'Nov', 'Dez'
+  ],
+  dayNames: [
+    'Domingo',
+    'Segunda-feira',
+    'Terça-feira',
+    'Quarta-feira',
+    'Quinta-feira',
+    'Sexta-feira',
+    'Sábado'
+  ],
+  dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+  today: 'Hoje'
+};
+
+LocaleConfig.defaultLocale = 'pt-br';
 
 const SchedulingScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
