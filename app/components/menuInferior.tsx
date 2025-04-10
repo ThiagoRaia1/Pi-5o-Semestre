@@ -23,7 +23,7 @@ export default function MenuInferior() {
     return (
         <View style={styles.bottomMenu}>
             {menuItems.map(({ href, icon, label }) => (
-                <Link key={href} href={href} style={{ marginTop: 7 }}>
+                <Link key={href} href={href} style={{ marginTop: 10 }}>
                     <View style={styles.menuItem}>
                         <View style={[styles.iconContainer, isActive(href) && styles.activeLink]}>
                             <Feather name={icon} size={iconsWidth} color="white" />
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     menuItem: {
         flex: 1,
         alignItems: 'center',
+        paddingBottom: 10
     },
     iconContainer: {
         alignItems: 'center',

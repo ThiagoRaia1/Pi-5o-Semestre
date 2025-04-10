@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Text, Button } from 'react-native-paper';
 import MenuInferior from '../../components/menuInferior';
@@ -94,7 +94,7 @@ const SchedulingScreen = () => {
               {row.map((time) => (
                 <Button
                   key={time}
-                  mode={selectedTime === time ? 'contained' : 'outlined'}
+                  mode={selectedTime === time ? 'elevated' : 'outlined'}
                   style={[styles.timeButton, selectedTime === time && styles.selectedTime]}
                   labelStyle={{ marginHorizontal: -20, fontSize: 18 }}
                   onPress={() => setSelectedTime(time)}
@@ -107,10 +107,8 @@ const SchedulingScreen = () => {
         </ScrollView>
 
         {/* Botão Agendar */}
-        <Button
-          mode="contained"
+        <TouchableOpacity
           style={styles.agendarButton}
-          labelStyle={{ color: 'white', fontSize: 18 }} // Muda a cor do texto
           onPress={() => {
             if (selectedDate == '' || selectedTime == '') {
               alert(`Escolha uma data e um horário.`)
@@ -121,8 +119,8 @@ const SchedulingScreen = () => {
           }
         /* disabled={!selectedDate || !selectedTime} // Bloqueia se nada for selecionado */
         >
-          Agendar
-        </Button>
+          <Text style={{ color: 'white', fontSize: 18 }}>Agendar</Text>
+        </TouchableOpacity>
       </View>
       <MenuInferior />
     </View>
@@ -176,12 +174,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#33A89E',
   },
   agendarButton: {
-    backgroundColor: '#33A89E',
-    borderRadius: 20,
+    backgroundColor: '#319594',
+    paddingVertical: 12,
+    borderRadius: 100,
     width: '90%',
-    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     alignSelf: 'center',
+    marginTop: 20,
+    elevation: 10
   },
+  
 });
 
 export default SchedulingScreen;

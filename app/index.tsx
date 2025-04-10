@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'white',
+    elevation: 10,
     paddingHorizontal: 15,
     marginBottom: 20,
     width: '100%',
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
     color: 'black',
+    fontSize: 16
   },
   button: {
     backgroundColor: '#319594',
@@ -95,6 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: '100%',
     alignItems: 'center',
+    elevation: 10
   },
   buttonText: {
     color: 'white',

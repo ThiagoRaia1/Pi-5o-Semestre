@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text, ScrollView } from 'react-native'
+import { View, StyleSheet, Image, Text, ScrollView, TouchableOpacity } from 'react-native'
 import MenuInferior from '../../components/menuInferior'
 import LogoutButton from '../../components/logoutButton';
 
@@ -8,9 +8,9 @@ function renderAula() {
       <View style={styles.dateContent}>
         <Text style={styles.dateText}>Quarta-feira, 02 de abril{'\n'}7:30</Text>
       </View>
-      <View style={styles.cancelarContent}>
-        <Text style={styles.cancelarText}>CANCELAR</Text>
-      </View>
+      <TouchableOpacity style={styles.cancelarContent}>
+          <Text style={styles.cancelarText}>CANCELAR</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     justifyContent: 'space-between',
     height: 100,
+    elevation: 10
   },
   dateContent: {
     padding: 10,
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F16E6E',
     borderRadius: 30,
     width: '30%',
+    elevation: 5
   },
   cancelarText: {
     textAlign: 'center',

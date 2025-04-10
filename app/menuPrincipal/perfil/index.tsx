@@ -45,7 +45,7 @@ export default function Perfil() {
     >
       <View style={[styles.contentlogo, isEditing && { marginTop: -40 }]}>
         <View style={[styles.content, isEditing && { gap: -10 }]}>
-      {!isEditing && <LogoutButton style={{marginTop: 10}}/>}
+          {!isEditing && <LogoutButton style={{ marginTop: 10 }} />}
           <View style={styles.titulo}>
             <Image source={require('../../../assets/userIcon.png')} style={styles.userphoto} />
             <Text style={[styles.textCampo, { fontSize: 40 }]}>Aluno</Text>
@@ -155,7 +155,8 @@ const styles = StyleSheet.create({
     width: '95%',
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    elevation: 10
   },
   buttonText: {
     color: 'white',
