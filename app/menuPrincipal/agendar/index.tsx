@@ -84,6 +84,20 @@ const SchedulingScreen = () => {
           />
         </View>
 
+        <Text style={
+          {
+            alignSelf: 'center',
+            justifyContent: 'center',
+            fontSize: 20,
+            color: 'white',
+            textShadowColor: 'black',
+            textShadowOffset: { width: 1, height: 1 },
+            textShadowRadius: 10,
+            marginBottom: -5,
+            fontWeight: 'bold'
+          }
+        }>Horários:</Text>
+
         {/* Seleção de Horário com Scroll */}
         <ScrollView style={styles.scrollContainer}>
           {groupedTimes.map((row, rowIndex) => (
@@ -96,7 +110,7 @@ const SchedulingScreen = () => {
                   key={time}
                   mode={selectedTime === time ? 'elevated' : 'outlined'}
                   style={[styles.timeButton, selectedTime === time && styles.selectedTime]}
-                  labelStyle={{ marginHorizontal: -20, fontSize: 18 }}
+                  labelStyle={[{ marginHorizontal: -20, fontSize: 18 }, selectedTime === time && { color: 'white' }]}
                   onPress={() => setSelectedTime(time)}
                 >
                   {time}
@@ -143,7 +157,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
     marginTop: 40,
     margin: 20,
@@ -155,7 +169,12 @@ const styles = StyleSheet.create({
   scrollContainer: {
     maxHeight: 140, // Limita altura do scroll para não afetar layout
     marginTop: 10,
-    padding: 17,
+    padding: 10,
+    marginHorizontal: 20,
+    backgroundColor: 'white',
+    borderColor: '#ccc',
+    borderWidth: 2,
+    borderRadius: 10,
   },
   timeRow: {
     flexDirection: 'row',
@@ -167,8 +186,9 @@ const styles = StyleSheet.create({
   },
   timeButton: {
     marginHorizontal: 5,
-    borderRadius: 10,
-    width: '22%', // Garante que 4 botões cabem na mesma linha
+    borderRadius: 20,
+    width: '22%', // Garante que 4 botões cabem na mesma linha,
+    backgroundColor: 'white'
   },
   selectedTime: {
     backgroundColor: '#33A89E',
@@ -184,7 +204,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     elevation: 10
   },
-  
+
 });
 
 export default SchedulingScreen;
