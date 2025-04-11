@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         borderColor: '#319594',
         borderRadius: 20,
         maxWidth: '55%',
-        paddingLeft: 15, // Move o placeholder um pouco para a direita
+        paddingHorizontal: 10, // Move o placeholder um pouco para a direita
     },
     button: {
         backgroundColor: '#319594',
