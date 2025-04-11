@@ -35,8 +35,8 @@ export default function Início() {
         </Text>
         <View style={
           {
-            marginTop: -10,
-            marginBottom: -20,
+            marginTop: -20,
+            marginBottom: -10,
             backgroundColor: 'white',
             marginHorizontal: 20,
             minWidth: '90%',
@@ -55,8 +55,8 @@ export default function Início() {
               color: 'black',
               fontWeight: 400,
               paddingHorizontal: 20,
-              marginTop: 10,
-              marginBottom: 30,
+              marginTop: 50,
+              marginBottom: 5
             }
           }>
             Sua próxima aula é:
