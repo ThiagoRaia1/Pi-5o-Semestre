@@ -1,11 +1,13 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Feather } from '@expo/vector-icons'; // icones do Expo
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useAuth } from '../context/auth';
 import { Link } from 'expo-router';
 
 export default function TelaLogin() {
-  const { user, handleLogin, setUser } = useAuth()
+  const { usuario, handleLogin, setUsuario } = useAuth();
+  const [senha, setSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -21,7 +23,7 @@ export default function TelaLogin() {
             style={styles.input}
             placeholder="Email"
             placeholderTextColor="#ccc"
-            onChangeText={text => setUser({ ...user, email: text })}
+            onChangeText={text => setUsuario({ ...usuario, login: text })}
           />
         </View>
 
@@ -31,12 +33,15 @@ export default function TelaLogin() {
             style={styles.input}
             placeholder="Senha"
             placeholderTextColor="#ccc"
-            secureTextEntry={true}
-            onChangeText={text => setUser({ ...user, password: text })}
+            secureTextEntry={!mostrarSenha}
+            onChangeText={text => setSenha(text)}
           />
+          <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
+            <Feather name={mostrarSenha ? "eye-off" : "eye"} size={20} color="black" />
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <TouchableOpacity style={styles.button} onPress={() => handleLogin(senha)}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
@@ -44,7 +49,6 @@ export default function TelaLogin() {
           <Link href="/menuPrincipal/inicio" style={styles.link}>Esqueci minha senha</Link>
         </TouchableOpacity>
 
-        {/* Texto posicionado no canto inferior direito */}
         <TouchableOpacity style={styles.registerLink}>
           <Link href='/cadastro' style={[styles.link, { textAlign: 'right' }]}>Não possui uma conta?{'\n'}Clique aqui!</Link>
         </TouchableOpacity>
@@ -79,7 +83,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#319594',
     borderRadius: 20,
-  },
+    justifyContent: 'space-between' // isso ajuda no alinhamento
+  },  
   icon: {
     marginRight: 10,
   },

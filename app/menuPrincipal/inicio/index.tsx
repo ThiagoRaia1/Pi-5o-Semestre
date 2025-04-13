@@ -1,8 +1,10 @@
 import { View, Image, Text, StyleSheet } from 'react-native'
 import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
+import { useAuth } from '../../../context/auth';
 
 export default function Início() {
+  const { usuario } = useAuth()
   return (
     <View style={styles.container}>
       <View style={
@@ -31,7 +33,7 @@ export default function Início() {
             textShadowRadius: 10, // Suaviza a borda
           }
         }>
-          Bem vindo, {'Aluno'}
+          Bem vindo, {usuario.nome}
         </Text>
         <View style={
           {

@@ -1,18 +1,21 @@
 import React, { createContext, useContext, useState } from 'react'
 import { router } from 'expo-router'
-import firebaseApp from '../app/services/firebase'
-import { initializeAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import * as SecureStore from 'expo-secure-store'
+import { autenticarLogin } from './api'
 
-interface IUser {
-  email: string
-  password: string
+interface IAluno {
+  login: string
+  nome: string
+  cpf: string
+  sexo: string
+  celular: string
+  dataNascimento: Date
 }
 
 interface IAuthContext {
-  user: IUser
-  setUser: (user: IUser) => void
-  handleLogin: () => void
+  usuario: IAluno
+  setUsuario: (usuario: IAluno) => void
+  handleLogin: (senha: string) => void
 }
 
 interface AuthProviderProps {
@@ -22,26 +25,35 @@ interface AuthProviderProps {
 const AuthContext = createContext<IAuthContext>({} as IAuthContext)
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<IUser>({email: '', password: ''})
+  const [usuario, setUsuario] = useState<IAluno>({
+    login: '',
+    nome: '',
+    cpf: '',
+    sexo: '',
+    celular: '',
+    dataNascimento: null
+  })
 
-  function handleLogin() {
-    if(!user || user.email === '' && user.password === '') {
-      alert('Usuário ou senha inválidos')
+  async function handleLogin(senha: string) {
+    try {
+      const aluno = await autenticarLogin(usuario.login, senha)
+      setUsuario(aluno)
+      router.push('/menuPrincipal/inicio')
+    } catch (erro: any) {
+      const mensagem = erro.message || ''
+
+      if (mensagem === 'Erro ao autenticar aluno') {
+        alert('Login ou senha inválidos')
+      } else if (mensagem === 'Erro ao buscar dados do aluno') {
+        alert('Erro ao buscar dados do aluno')
+      } else {
+        alert('Erro inesperado ao fazer login')
+      }
     }
-
-    const auth = initializeAuth(firebaseApp)
-    signInWithEmailAndPassword(auth, user.email, user.password)
-      .then((userCredential) => {
-        SecureStore.setItemAsync('token', userCredential.user?.uid || '') // Aqui estamos guardando no SecureStore o ID do usuário que o Firebase retorna
-        router.push('/menuPrincipal/agenda')
-      })
-      .catch(() => {
-        alert('Usuário ou senha inválidos')
-      })
   }
 
   return (
-    <AuthContext.Provider value={{ user, handleLogin, setUser }}>
+    <AuthContext.Provider value={{ usuario, handleLogin, setUsuario }}>
       {children}
     </AuthContext.Provider>
   )
