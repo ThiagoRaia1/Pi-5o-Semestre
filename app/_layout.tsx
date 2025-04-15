@@ -7,7 +7,7 @@ export default function Layout() {
   return (
     <PaperProvider>
       <AuthProvider>
-        <StatusBar translucent backgroundColor="transparent" style="light" />
+        <StatusBar hidden />
         <Slot />
       </AuthProvider>
     </PaperProvider>

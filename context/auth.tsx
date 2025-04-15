@@ -3,7 +3,7 @@ import { router } from 'expo-router'
 import * as SecureStore from 'expo-secure-store'
 import { autenticarLogin } from './api'
 
-interface IAluno {
+export interface IAluno {
   login: string
   nome: string
   cpf: string

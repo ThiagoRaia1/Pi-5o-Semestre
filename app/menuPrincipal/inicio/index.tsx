@@ -47,7 +47,7 @@ export default function Início() {
             borderRadius: 20,
             borderColor: '#ccc',
             borderWidth: 2,
-            justifyContent: 'flex-start'
+            justifyContent: 'center'
           }
         }>
 
@@ -57,7 +57,6 @@ export default function Início() {
               color: 'black',
               fontWeight: 400,
               paddingHorizontal: 20,
-              marginTop: 50,
               marginBottom: 5
             }
           }>

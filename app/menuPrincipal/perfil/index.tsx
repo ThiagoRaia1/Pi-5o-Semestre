@@ -12,11 +12,12 @@ import {
 import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
 import { useAuth } from '../../../context/auth'; // Importa o contexto
+import { atualizarUsuario } from './api';
 
 const userProfileImageSize = 110;
 
 export default function Perfil() {
-  const { usuario } = useAuth(); // Pega os dados do usuário logado
+  const { usuario, setUsuario } = useAuth(); // Pega os dados do usuário logado
   const [isEditing, setIsEditing] = useState(false);
   const [usuarioEditado, setUsuarioEditado] = useState(usuario); // Editável localmente
 
@@ -34,9 +35,22 @@ export default function Perfil() {
     setIsEditing(false);
   };
 
-  const handleSave = () => {
-    // Aqui você pode adicionar a chamada à API para atualizar os dados, se quiser
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const dadosAtualizados = {
+        ...usuarioEditado,
+        dataNascimento: new Date(usuarioEditado.dataNascimento),
+      }
+  
+      const usuarioAtualizado = await atualizarUsuario(usuario.login, dadosAtualizados);
+      setUsuario(dadosAtualizados); // Atualiza o contexto com os novos dados
+      setIsEditing(false);
+  
+      alert('Dados atualizados com sucesso!');
+    } catch (error) {
+      console.error('Erro ao atualizar:', error);
+      alert('Erro ao salvar dados.');
+    }
   };
 
   // Função para formatar a data
@@ -49,10 +63,7 @@ export default function Perfil() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       {!isEditing && <LogoutButton style={{ zIndex: 1 }} />}
 
       <View style={[styles.contentlogo, isEditing && { marginTop: -20 }]}>
@@ -101,7 +112,7 @@ export default function Perfil() {
       )}
 
       {!isEditing && <MenuInferior />}
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
