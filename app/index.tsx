@@ -49,9 +49,6 @@ export default function TelaLogin() {
           <Link href="/menuPrincipal/inicio" style={styles.link}>Esqueci minha senha</Link>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.registerLink}>
-          <Link href='/cadastro' style={[styles.link, { textAlign: 'right' }]}>Não possui uma conta?{'\n'}Clique aqui!</Link>
-        </TouchableOpacity>
       </View>
     </View>
   );
