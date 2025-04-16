@@ -6,7 +6,7 @@ import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
 import { useAuth } from '../../../context/auth';
 import agendarAula from './api';
-import { formataData } from '../../utils/formataData';
+import formataData from '../../utils/formataData';
 
 LocaleConfig.locales['pt-br'] = {
   monthNames: [

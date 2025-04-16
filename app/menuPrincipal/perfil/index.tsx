@@ -6,14 +6,12 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
 import { useAuth } from '../../../context/auth'; // Importa o contexto
 import atualizarUsuario from './api';
-import { formataData } from '../../utils/formataData';
+import formataData from '../../utils/formataData';
 
 const userProfileImageSize = 110;
 

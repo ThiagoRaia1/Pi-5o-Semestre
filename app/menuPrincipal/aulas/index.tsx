@@ -1,21 +1,47 @@
 import { View, StyleSheet, Image, Text, ScrollView, TouchableOpacity } from 'react-native'
 import MenuInferior from '../../components/menuInferior'
 import LogoutButton from '../../components/logoutButton';
+import getAulasSeguintes from './api';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../../../context/auth';
+import { formataDataAula } from '../../utils/formataData';
 
-function renderAula() {
+function renderAula(aula: { data: string; emailAluno: string }) {
+
+  const dataFormatada = formataDataAula(aula.data)
+
   return (
     <View style={styles.aulaContent}>
       <View style={styles.dateContent}>
-        <Text style={styles.dateText}>Quarta-feira, 02 de abril{'\n'}7:30</Text>
+        <Text style={styles.dateText}>
+          {`${dataFormatada.diaSemana}, ${dataFormatada.dia}\n${dataFormatada.hora}`}
+        </Text>
       </View>
       <TouchableOpacity style={styles.cancelarContent}>
-          <Text style={styles.cancelarText}>CANCELAR</Text>
+        <Text style={styles.cancelarText}>CANCELAR</Text>
       </TouchableOpacity>
     </View>
-  )
+  );
 }
 
 export default function Aulas() {
+  const { usuario } = useAuth()
+  const [aulas, setAulas] = useState([]);
+
+  useEffect(() => {
+    const carregarAulas = async () => {
+      try {
+        const resposta = await getAulasSeguintes(usuario.login);
+        // console.log('Aulas recebidas:', resposta); // Aqui!
+        setAulas(resposta);
+      } catch (erro) {
+        console.error('Erro ao buscar aulas:', erro);
+      }
+    };
+
+    carregarAulas();
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* Parte principal com fundo e conteúdo */}
@@ -33,10 +59,13 @@ export default function Aulas() {
           contentContainerStyle={styles.scrollContent}
           persistentScrollbar={true}
         >
-          {/* Renderiza 10 componentes de aula */}
-          {Array.from({ length: 10 }).map((_, index) => (
-            <View key={index}>{renderAula()}</View>
-          ))}
+          {aulas
+            .filter((aula) => new Date(aula.data) > new Date())
+            .map((aula) => (
+              <View key={aula._id}>{renderAula(aula)}</View>
+            ))}
+
+
         </ScrollView>
       </View>
       <MenuInferior />
