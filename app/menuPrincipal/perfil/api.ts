@@ -2,7 +2,7 @@ import { IAluno } from '../../../context/auth';
 
 const API_URL = 'http://192.168.0.25:3000/alunos';
 
-export async function atualizarUsuario(login: string, novosDados: Partial<IAluno>) {
+export default async function atualizarUsuario(login: string, novosDados: Partial<IAluno>) {
     try {
       const resposta = await fetch(`${API_URL}/${login}`, {
         method: 'PATCH',

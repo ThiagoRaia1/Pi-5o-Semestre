@@ -12,7 +12,8 @@ import {
 import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
 import { useAuth } from '../../../context/auth'; // Importa o contexto
-import { atualizarUsuario } from './api';
+import atualizarUsuario from './api';
+import { formataData } from '../../utils/formataData';
 
 const userProfileImageSize = 110;
 
@@ -53,14 +54,7 @@ export default function Perfil() {
     }
   };
 
-  // Função para formatar a data
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
+  
 
   return (
     <View style={styles.container}>
@@ -81,7 +75,7 @@ export default function Perfil() {
               <CampoVisual label="EMAIL" valor={usuario.login} fontSize={14} />
               <CampoVisual label="SEXO" valor={usuario.sexo} />
               <CampoVisual label="CELULAR" valor={usuario.celular} />
-              <CampoVisual label={`DATA DE${'\n'}NASCIMENTO`} valor={formatDate(usuario.dataNascimento)} />
+              <CampoVisual label={`DATA DE${'\n'}NASCIMENTO`} valor={formataData(usuario.dataNascimento)} />
             </>
           ) : (
             <>
@@ -89,7 +83,7 @@ export default function Perfil() {
               <CampoEditavel label="EMAIL" valor={usuarioEditado.login} onChange={v => handleChange('login', v)} />
               <CampoEditavel label="SEXO" valor={usuarioEditado.sexo} onChange={v => handleChange('sexo', v)} />
               <CampoEditavel label="CELULAR" valor={usuarioEditado.celular} onChange={v => handleChange('celular', v)} />
-              <CampoEditavel label={`DATA DE${'\n'}NASCIMENTO`} valor={formatDate(usuario.dataNascimento)} onChange={v => handleChange('dataNascimento', v)} />
+              <CampoEditavel label={`DATA DE${'\n'}NASCIMENTO`} valor={formataData(usuario.dataNascimento)} onChange={v => handleChange('dataNascimento', v)} />
             </>
           )}
         </View>

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Text, Button } from 'react-native-paper';
 import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
+import { useAuth } from '../../../context/auth';
+import agendarAula from './api';
+import { formataData } from '../../utils/formataData';
 
 LocaleConfig.locales['pt-br'] = {
   monthNames: [
@@ -34,6 +37,7 @@ LocaleConfig.locales['pt-br'] = {
 LocaleConfig.defaultLocale = 'pt-br';
 
 const SchedulingScreen = () => {
+  const { usuario } = useAuth()
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
 
@@ -123,11 +127,15 @@ const SchedulingScreen = () => {
         {/* Botão Agendar */}
         <TouchableOpacity
           style={styles.agendarButton}
-          onPress={() => {
+          onPress={async () => {
             if (selectedDate == '' || selectedTime == '') {
               alert(`Escolha uma data e um horário.`)
             } else {
-              alert(`Agendado para ${selectedDate} às ${selectedTime}`)
+              console.log(usuario.login)
+              const data = new Date(`${selectedDate}T${selectedTime}`)
+              console.log(data)
+              const aula = await agendarAula(usuario.login, data)
+              alert(`Agendado para ${formataData(selectedDate)} às ${selectedTime}`)
             }
           }
           }
