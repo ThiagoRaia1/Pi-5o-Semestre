@@ -5,7 +5,7 @@
     "owner": "thiagoraia",
     "version": "1.0.0",
     "githubUrl": "https://github.com/ThiagoRaia1/Pi-5o-Semestre",
-    "icon": "./assets/iconAppTeste3.jpg",
+    "icon": "./assets/appIcon.png",
     "backgroundColor": "#ffffff",
     "primaryColor": "#ffffff",
     "orientation": "portrait",
@@ -18,7 +18,7 @@
       "visible": "immersive"
     },
     "splash": {
-      "image": "./assets/iconAppTeste3.jpg",
+      "image": "./assets/splashImage.png",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -32,7 +32,7 @@
       "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/splashImage.png"
     },
     "plugins": [
       "expo-router",
