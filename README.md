@@ -24,3 +24,8 @@ Front-end da aplicação Plenitude Pilates, feita para que os alunos já cadastr
 
    ```bash
    npm i
+
+4. Inicie o programa
+
+   ```bash
+   npx expo start
