@@ -1,8 +1,8 @@
-import { Slot } from "expo-router"
-import { PaperProvider } from "react-native-paper"
-import { AuthProvider } from "../context/auth"
-import { StatusBar } from "expo-status-bar"
-import * as NavigationBar from 'expo-navigation-bar';
+import { Slot } from "expo-router";
+import { PaperProvider } from "react-native-paper";
+import { AuthProvider } from "../context/auth";
+import { StatusBar } from "expo-status-bar";
+import * as NavigationBar from "expo-navigation-bar";
 import { useEffect } from "react";
 
 export default function Layout() {
@@ -18,5 +18,5 @@ export default function Layout() {
         <Slot />
       </AuthProvider>
     </PaperProvider>
-  )
+  );
 }

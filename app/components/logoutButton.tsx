@@ -1,10 +1,13 @@
 import { Link } from "expo-router";
-import { Feather } from '@expo/vector-icons'; // Ícones do Expo
+import { Feather } from "@expo/vector-icons"; // Ícones do Expo
 
 export default function LogoutButton({ style = {} }) {
-    return (
-        <Link href='/' style={[{ position: 'absolute', right: 10, top: 15 }, style]}>
-            <Feather name="log-out" size={30} color="black" />
-        </Link>
-    );
+  return (
+    <Link
+      href="/"
+      style={[{ position: "absolute", right: 10, top: 15 }, style]}
+    >
+      <Feather name="log-out" size={30} color="black" />
+    </Link>
+  );
 }

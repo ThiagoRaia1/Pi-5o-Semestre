@@ -59,10 +59,7 @@ export default function MenuInferior() {
         return (
           <View
             key={href}
-            style={[
-              styles.menuItem,
-              { width: itemWidth, zIndex: 1 },
-            ]}
+            style={[styles.menuItem, { width: itemWidth, zIndex: 1 }]}
           >
             <Link href={href} asChild>
               <TouchableOpacity
