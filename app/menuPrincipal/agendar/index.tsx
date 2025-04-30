@@ -41,15 +41,15 @@ const SchedulingScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
 
-  // Gera os horários automaticamente (06:00 até 18:00, intervalos de 30 min)
+  // Gera os horários automaticamente (06:00 até 18:00, intervalos de 1 hora)
   const generateTimes = () => {
     let times = [];
-    for (let hour = 6; hour <= 18; hour++) {
-      times.push(`${hour}:00`);
-      if (hour !== 18) times.push(`${hour}:30`);
+    for (let hour = 6; hour <= 17; hour++) {
+      times.push(`${String(hour).padStart(2, '0')}:00`);
     }
     return times;
   };
+
 
   const times = generateTimes();
 
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
   },
   scrollContainer: {
-    maxHeight: 140, // Limita altura do scroll para não afetar layout
+    maxHeight: 170, // Limita altura do scroll para não afetar layout
     marginTop: 10,
     padding: 10,
     marginHorizontal: 20,

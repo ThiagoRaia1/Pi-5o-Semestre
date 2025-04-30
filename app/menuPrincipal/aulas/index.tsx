@@ -1,23 +1,33 @@
-import { View, StyleSheet, Image, Text, ScrollView, TouchableOpacity } from 'react-native'
-import MenuInferior from '../../components/menuInferior'
+import { View, StyleSheet, Image, Text, ScrollView, TouchableOpacity } from 'react-native';
+import MenuInferior from '../../components/menuInferior';
 import LogoutButton from '../../components/logoutButton';
-import getAulasSeguintes from './api';
+import getAulasSeguintes, { excluirAula } from './api';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../../context/auth';
 import { formataDataAula } from '../../utils/formataData';
 
-function renderAula(aula: { data: string; emailAluno: string }) {
-
-  const dataFormatada = formataDataAula(aula.data)
+function renderAula(
+  aula: { _id: string; data: string; emailAluno: string },
+  onCancelar: (aula: { _id: string; data: string; emailAluno: string }) => void
+) {
+  const dataFormatada = formataDataAula(aula.data);
+  
+  // Verificando se a formatação de data está correta e se dataFormatada é uma string
+  console.log('Dados da aula:', aula);
+  console.log('Data formatada:', dataFormatada);
 
   return (
     <View style={styles.aulaContent}>
       <View style={styles.dateContent}>
         <Text style={styles.dateText}>
+          {/* Certifique-se de que dataFormatada.diaSemana, dia, hora são strings */}
           {`${dataFormatada.diaSemana}, ${dataFormatada.dia}\n${dataFormatada.hora}`}
         </Text>
       </View>
-      <TouchableOpacity style={styles.cancelarContent}>
+      <TouchableOpacity
+        style={styles.cancelarContent}
+        onPress={() => onCancelar(aula)} // Passa a aula para a função de cancelar
+      >
         <Text style={styles.cancelarText}>CANCELAR</Text>
       </TouchableOpacity>
     </View>
@@ -25,14 +35,13 @@ function renderAula(aula: { data: string; emailAluno: string }) {
 }
 
 export default function Aulas() {
-  const { usuario } = useAuth()
+  const { usuario } = useAuth();
   const [aulas, setAulas] = useState([]);
 
   useEffect(() => {
     const carregarAulas = async () => {
       try {
         const resposta = await getAulasSeguintes(usuario.login);
-        // console.log('Aulas recebidas:', resposta); // Aqui!
         setAulas(resposta);
       } catch (erro) {
         console.error('Erro ao buscar aulas:', erro);
@@ -42,9 +51,18 @@ export default function Aulas() {
     carregarAulas();
   }, []);
 
+  // Função para cancelar a aula
+  const cancelarAula = async (aula: { _id: string; data: string; emailAluno: string }) => {
+    try {
+      await excluirAula(usuario.login, new Date(aula.data)); // Chama a API para excluir a aula
+      setAulas((prev) => prev.filter((a) => a._id !== aula._id)); // Remove a aula da lista
+    } catch (error) {
+      console.error('Erro ao cancelar aula:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* Parte principal com fundo e conteúdo */}
       <Image
         source={require('../../../assets/fundoAgendar.png')}
         style={styles.backgroundImage}
@@ -53,24 +71,23 @@ export default function Aulas() {
       <View style={styles.mainContent}>
         <LogoutButton />
         <Text style={styles.title}>PRÓXIMAS AULAS</Text>
-        {/* ScrollView corrigida */}
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           persistentScrollbar={true}
         >
           {aulas
-            .filter((aula) => new Date(aula.data) > new Date())
+            .filter((aula) => new Date(aula.data) > new Date()) // Filtra aulas futuras
             .map((aula) => (
-              <View key={aula._id}>{renderAula(aula)}</View>
+              <View key={aula._id}>
+                {renderAula(aula, cancelarAula)} {/* Passa a função cancelarAula para o renderAula */}
+              </View>
             ))}
-
-
         </ScrollView>
       </View>
       <MenuInferior />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -79,7 +96,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 7,
-    backgroundColor: '#f2f2f0aa', // transparente para ver o fundo
+    backgroundColor: '#f2f2f0aa',
     paddingHorizontal: 20,
     paddingTop: 80,
     paddingBottom: 20
@@ -154,4 +171,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-})
+});
