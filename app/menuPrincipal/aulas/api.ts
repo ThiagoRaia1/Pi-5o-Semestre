@@ -1,26 +1,27 @@
-const API_URL = 'http://192.168.0.25:3000/aulas';
+import { API_URL } from "../../services/apiurl";
 
-export default async function getAulasSeguintes(login: string) {
+export async function getAulasSeguintes(login: string) {
   try {
-    const resposta = await fetch(`${API_URL}/${login}`, {
-      method: 'GET',
+    const resposta = await fetch(`${API_URL}/aulas/${login}`, {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
     if (!resposta.ok) {
       const erro = await resposta.json();
-      throw new Error(erro.message || 'Erro ao carregar aulas');
+      throw new Error(erro.message || "Erro ao carregar aulas");
     }
 
     const usuarioAtualizado = await resposta.json();
     return usuarioAtualizado;
   } catch (erro) {
-    console.error('Erro ao carregar aulas:', erro.message);
+    console.error("Erro ao carregar aulas:", erro.message);
     throw erro;
   }
 }
+
 
 export async function excluirAula(login: string, dataHora: Date) {
   try {
@@ -40,3 +41,4 @@ export async function excluirAula(login: string, dataHora: Date) {
     throw erro;
   }
 }
+

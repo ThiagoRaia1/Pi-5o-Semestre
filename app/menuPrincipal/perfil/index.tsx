@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   View,
   Text,
@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-} from 'react-native';
-import MenuInferior from '../../components/menuInferior';
-import LogoutButton from '../../components/logoutButton';
-import { useAuth } from '../../../context/auth'; // Importa o contexto
-import atualizarUsuario from './api';
-import formataData from '../../utils/formataData';
+} from "react-native";
+import MenuInferior from "../../components/menuInferior";
+import LogoutButton from "../../components/logoutButton";
+import { useAuth } from "../../../context/auth"; // Importa o contexto
+import { atualizarUsuario } from "./api";
+import formataData from "../../utils/formataData";
 
 const userProfileImageSize = 110;
 
@@ -39,20 +39,21 @@ export default function Perfil() {
       const dadosAtualizados = {
         ...usuarioEditado,
         dataNascimento: new Date(usuarioEditado.dataNascimento),
-      }
-  
-      const usuarioAtualizado = await atualizarUsuario(usuario.login, dadosAtualizados);
+      };
+
+      const usuarioAtualizado = await atualizarUsuario(
+        usuario.login,
+        dadosAtualizados
+      );
       setUsuario(dadosAtualizados); // Atualiza o contexto com os novos dados
       setIsEditing(false);
-  
-      alert('Dados atualizados com sucesso!');
+
+      alert("Dados atualizados com sucesso!");
     } catch (error) {
-      console.error('Erro ao atualizar:', error);
-      alert('Erro ao salvar dados.');
+      console.error("Erro ao atualizar:", error);
+      alert("Erro ao salvar dados.");
     }
   };
-
-  
 
   return (
     <View style={styles.container}>
@@ -61,8 +62,11 @@ export default function Perfil() {
       <View style={[styles.contentlogo, isEditing && { marginTop: -20 }]}>
         <View style={[styles.content, isEditing && { marginTop: 40, gap: 30 }]}>
           <View style={styles.titulo}>
-            <Image source={require('../../../assets/userIcon.png')} style={styles.userphoto} />
-            <Text style={[styles.textCampo, { fontSize: 25, width: '60%' }]}>
+            <Image
+              source={require("../../../assets/userIcon.png")}
+              style={styles.userphoto}
+            />
+            <Text style={[styles.textCampo, { fontSize: 25, width: "70%" }]}>
               {usuario.nome}
             </Text>
           </View>
@@ -73,15 +77,38 @@ export default function Perfil() {
               <CampoVisual label="EMAIL" valor={usuario.login} fontSize={14} />
               <CampoVisual label="SEXO" valor={usuario.sexo} />
               <CampoVisual label="CELULAR" valor={usuario.celular} />
-              <CampoVisual label={`DATA DE${'\n'}NASCIMENTO`} valor={formataData(usuario.dataNascimento)} />
+              <CampoVisual
+                label={`DATA DE${"\n"}NASCIMENTO`}
+                valor={formataData(usuario.dataNascimento.toString())}
+              />
             </>
           ) : (
             <>
-              <CampoEditavel label="CPF" valor={usuarioEditado.cpf} onChange={v => handleChange('cpf', v)} />
-              <CampoEditavel label="EMAIL" valor={usuarioEditado.login} onChange={v => handleChange('login', v)} />
-              <CampoEditavel label="SEXO" valor={usuarioEditado.sexo} onChange={v => handleChange('sexo', v)} />
-              <CampoEditavel label="CELULAR" valor={usuarioEditado.celular} onChange={v => handleChange('celular', v)} />
-              <CampoEditavel label={`DATA DE${'\n'}NASCIMENTO`} valor={formataData(usuario.dataNascimento)} onChange={v => handleChange('dataNascimento', v)} />
+              <CampoEditavel
+                label="CPF"
+                valor={usuarioEditado.cpf}
+                onChange={(v) => handleChange("cpf", v)}
+              />
+              <CampoEditavel
+                label="EMAIL"
+                valor={usuarioEditado.login}
+                onChange={(v) => handleChange("login", v)}
+              />
+              <CampoEditavel
+                label="SEXO"
+                valor={usuarioEditado.sexo}
+                onChange={(v) => handleChange("sexo", v)}
+              />
+              <CampoEditavel
+                label="CELULAR"
+                valor={usuarioEditado.celular}
+                onChange={(v) => handleChange("celular", v)}
+              />
+              <CampoEditavel
+                label={`DATA DE${"\n"}NASCIMENTO`}
+                valor={formataData(usuario.dataNascimento.toString())}
+                onChange={(v) => handleChange("dataNascimento", v)}
+              />
             </>
           )}
         </View>
@@ -91,12 +118,15 @@ export default function Perfil() {
         style={[styles.button, !isEditing && { marginBottom: 20 }]}
         onPress={isEditing ? handleSave : handleEdit}
       >
-        <Text style={styles.buttonText}>{isEditing ? 'Salvar' : 'Editar'}</Text>
+        <Text style={styles.buttonText}>{isEditing ? "Salvar" : "Editar"}</Text>
       </TouchableOpacity>
 
       {isEditing && (
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: 'red', marginTop: 10, marginBottom: 30 }]}
+          style={[
+            styles.button,
+            { backgroundColor: "red", marginTop: 10, marginBottom: 30 },
+          ]}
           onPress={handleCancel}
         >
           <Text style={styles.buttonText}>Cancelar</Text>
@@ -121,11 +151,7 @@ function CampoEditavel({ label, valor, onChange }) {
   return (
     <View style={[styles.inputContainer, { paddingHorizontal: 10 }]}>
       <Text style={styles.textCampo}>{label}</Text>
-      <TextInput
-        style={styles.input}
-        value={valor}
-        onChangeText={onChange}
-      />
+      <TextInput style={styles.input} value={valor} onChangeText={onChange} />
     </View>
   );
 }
@@ -135,9 +161,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "flex-start",
+    width: "100%",
   },
   logo: {
     width: 100,
@@ -145,9 +171,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   titulo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    width: "100%",
     marginBottom: 10,
   },
   userphoto: {
@@ -160,28 +187,28 @@ const styles = StyleSheet.create({
   contentlogo: {
     flex: 7,
     marginTop: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
   },
   content: {
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
     paddingHorizontal: 20,
     gap: 15,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
-    width: '100%',
-    justifyContent: 'space-between',
+    width: "100%",
+    justifyContent: "space-between",
   },
   inputContainerWhileNotEditing: {
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 2,
     borderRadius: 20,
     padding: 15,
@@ -189,42 +216,42 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 45,
-    color: 'black',
+    color: "black",
     borderWidth: 1,
-    borderColor: '#319594',
+    borderColor: "#319594",
     borderRadius: 20,
-    maxWidth: '55%',
+    maxWidth: "55%",
     paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: '#319594',
+    backgroundColor: "#319594",
     paddingVertical: 12,
     borderRadius: 100,
-    width: '90%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
+    width: "90%",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
     elevation: 10,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   link: {
-    color: 'black',
+    color: "black",
     marginTop: 20,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
     fontSize: 20,
   },
   registerLink: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     right: 20,
   },
   textCampo: {
-    color: '#4B366D',
-    fontWeight: '700',
+    color: "#4B366D",
+    fontWeight: "700",
     fontSize: 18,
   },
 });

@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { useAuth } from '../context/auth';
-import { Link } from 'expo-router';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { useAuth } from "../context/auth";
+import { Link } from "expo-router";
 
 export default function TelaLogin() {
   const { usuario, handleLogin, setUsuario } = useAuth();
-  const [senha, setSenha] = useState('');
+  const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/fundoLogin.jpeg')}
+        source={require("../assets/fundoLogin.jpeg")}
         style={styles.backgroundImage}
         resizeMode="stretch"
       />
@@ -23,7 +30,7 @@ export default function TelaLogin() {
             style={styles.input}
             placeholder="Email"
             placeholderTextColor="#ccc"
-            onChangeText={text => setUsuario({ ...usuario, login: text })}
+            onChangeText={(text) => setUsuario({ ...usuario, login: text })}
           />
         </View>
 
@@ -34,21 +41,29 @@ export default function TelaLogin() {
             placeholder="Senha"
             placeholderTextColor="#ccc"
             secureTextEntry={!mostrarSenha}
-            onChangeText={text => setSenha(text)}
+            onChangeText={(text) => setSenha(text)}
           />
           <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
-            <Feather name={mostrarSenha ? "eye-off" : "eye"} size={20} color="black" />
+            <Feather
+              name={mostrarSenha ? "eye-off" : "eye"}
+              size={20}
+              color="black"
+            />
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin(senha)}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleLogin(senha)}
+        >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <Link href="/menuPrincipal/inicio" style={styles.link}>Esqueci minha senha</Link>
+          <Link href="/menuPrincipal/inicio" style={styles.link}>
+            Esqueci minha senha
+          </Link>
         </TouchableOpacity>
-
       </View>
     </View>
   );
@@ -59,60 +74,60 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   backgroundImage: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
+    position: "absolute",
+    width: "100%",
+    height: "100%",
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 30,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     elevation: 10,
     paddingHorizontal: 15,
     marginBottom: 20,
-    width: '100%',
+    width: "100%",
     borderWidth: 1,
-    borderColor: '#319594',
+    borderColor: "#319594",
     borderRadius: 20,
-    justifyContent: 'space-between' // isso ajuda no alinhamento
-  },  
+    justifyContent: "space-between", // isso ajuda no alinhamento
+  },
   icon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
     height: 50,
-    color: 'black',
-    fontSize: 16
+    color: "black",
+    fontSize: 16,
   },
   button: {
-    backgroundColor: '#319594',
+    backgroundColor: "#319594",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 100,
     marginTop: 10,
-    width: '100%',
-    alignItems: 'center',
-    elevation: 10
+    width: "100%",
+    alignItems: "center",
+    elevation: 10,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   link: {
-    color: 'black',
+    color: "black",
     marginTop: 20,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
   },
   registerLink: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     right: 20,
   },
