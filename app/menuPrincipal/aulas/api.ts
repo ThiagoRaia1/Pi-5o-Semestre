@@ -21,3 +21,24 @@ export async function getAulasSeguintes(login: string) {
     throw erro;
   }
 }
+
+
+export async function excluirAula(login: string, dataHora: Date) {
+  try {
+    const response = await fetch(`${API_URL}/${login}/${dataHora}`, {
+      method: 'DELETE',
+    });
+
+    const resultado = await response.json();
+
+    if (!response.ok) {
+      throw new Error(resultado.mensagem || 'Erro ao excluir a aula');
+    }
+
+    return resultado;
+  } catch (erro) {
+    console.error('Erro ao excluir aula:', erro);
+    throw erro;
+  }
+}
+
