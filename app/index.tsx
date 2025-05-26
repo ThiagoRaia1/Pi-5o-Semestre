@@ -10,11 +10,13 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { useAuth } from "../context/auth";
 import { Link } from "expo-router";
+import Carregando from "./components/Carregando";
 
 export default function TelaLogin() {
   const { usuario, handleLogin, setUsuario } = useAuth();
   const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [carregando, setCarregando] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -54,7 +56,16 @@ export default function TelaLogin() {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => handleLogin(senha)}
+          onPress={() => {
+            setCarregando(true);
+            try {
+              handleLogin(senha);
+            } catch (erro: any) {
+              console.log(erro.message)
+            } finally {
+              setCarregando(false);
+            }
+          }}
         >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
@@ -65,6 +76,7 @@ export default function TelaLogin() {
           </Link>
         </TouchableOpacity>
       </View>
+      {carregando && <Carregando />}
     </View>
   );
 }

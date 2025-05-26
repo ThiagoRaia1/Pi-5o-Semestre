@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { autenticarLogin } from "./api";
 
 export interface IAluno {
