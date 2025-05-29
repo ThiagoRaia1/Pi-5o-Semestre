@@ -1,32 +1,47 @@
-import { View, StyleSheet, Image, Text, ScrollView, TouchableOpacity } from 'react-native'
-import MenuInferior from '../../components/menuInferior'
-import LogoutButton from '../../components/logoutButton';
-import { getAulasSeguintes, excluirAula } from './api';
-import { useEffect, useState } from 'react';
-import { useAuth } from '../../../context/auth';
-import { formataDataAula } from '../../utils/formataData';
+import {
+  View,
+  Image,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import MenuInferior from "../../components/MenuInferior";
+import BotaoLogout from "../../components/BotaoLogout";
+import Carregando from "../../components/Carregando";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../../context/auth";
+import {
+  excluirAula,
+  getAulasSeguintes,
+  IAula,
+} from "../../../services/apiAulas";
 
-function renderAula(
-  aula: { _id: string; data: string; emailAluno: string },
-  onCancelar: (aula: { _id: string; data: string; emailAluno: string }) => void
-) {
-  const dataFormatada = formataDataAula(aula.data);
-  
-  // Verificando se a formatação de data está correta e se dataFormatada é uma string
-  console.log('Dados da aula:', aula);
-  console.log('Data formatada:', dataFormatada);
+function renderAula(aula: IAula, onCancelar: (aula: IAula) => void) {
+  const dataAula = new Date(aula.data);
 
   return (
     <View style={styles.aulaContent}>
       <View style={styles.dateContent}>
         <Text style={styles.dateText}>
-          {/* Certifique-se de que dataFormatada.diaSemana, dia, hora são strings */}
-          {`${dataFormatada.diaSemana}, ${dataFormatada.dia}\n${dataFormatada.hora}`}
+          {dataAula.toLocaleDateString() +
+            ", " +
+            dataAula.toLocaleDateString("pt-BR", {
+              weekday: "long",
+            }) +
+            `, ${"\n"}` +
+            dataAula.toLocaleTimeString("pt-BR", {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false, // 24h format
+            })}
         </Text>
       </View>
       <TouchableOpacity
         style={styles.cancelarContent}
-        onPress={() => onCancelar(aula)} // Passa a aula para a função de cancelar
+        onPress={() => {
+          onCancelar(aula);
+        }} // Passa a aula para a função de cancelar
       >
         <Text style={styles.cancelarText}>CANCELAR</Text>
       </TouchableOpacity>
@@ -36,15 +51,19 @@ function renderAula(
 
 export default function Aulas() {
   const { usuario } = useAuth();
+  const [carregando, setCarregando] = useState(false);
   const [aulas, setAulas] = useState([]);
 
   useEffect(() => {
     const carregarAulas = async () => {
+      setCarregando(true);
       try {
         const resposta = await getAulasSeguintes(usuario.login);
         setAulas(resposta);
       } catch (erro) {
         console.error("Erro ao buscar aulas:", erro);
+      } finally {
+        setCarregando(false);
       }
     };
 
@@ -52,40 +71,42 @@ export default function Aulas() {
   }, []);
 
   // Função para cancelar a aula
-  const cancelarAula = async (aula: { _id: string; data: string; emailAluno: string }) => {
+  const cancelarAula = async (aula: IAula) => {
     try {
-      await excluirAula(usuario.login, new Date(aula.data)); // Chama a API para excluir a aula
-      setAulas((prev) => prev.filter((a) => a._id !== aula._id)); // Remove a aula da lista
+      await excluirAula(aula._id); // Chama a API para excluir a aula
+      setAulas((prev) => prev.filter((a: IAula) => a._id !== aula._id)); // Remove a aula da lista
+      alert("Aula desmarcada com sucesso!");
     } catch (error) {
-      console.error('Erro ao cancelar aula:', error);
+      console.error("Erro ao cancelar aula:", error);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("../../../assets/fundoAgendar.png")}
-        style={styles.backgroundImage}
-        resizeMode="stretch"
-      />
-      <View style={styles.mainContent}>
-        <LogoutButton />
-        <Text style={styles.title}>PRÓXIMAS AULAS</Text>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          persistentScrollbar={true}
-        >
-          {aulas
-            .filter((aula) => new Date(aula.data) > new Date()) // Filtra aulas futuras
-            .map((aula) => (
-              <View key={aula._id}>
-                {renderAula(aula, cancelarAula)} {/* Passa a função cancelarAula para o renderAula */}
-              </View>
-            ))}
-        </ScrollView>
+    <View style={{ flex: 1, backgroundColor: "#aaa" }}>
+      <View style={{ flex: 1, backgroundColor: "#eee" }}>
+        <BotaoLogout />
+        <Image
+          source={require("../../../assets/fundoAgendar.png")}
+          style={styles.backgroundImage}
+          resizeMode="stretch"
+        />
+        <View style={styles.mainContent}>
+          <Text style={styles.title}>PRÓXIMAS AULAS</Text>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            persistentScrollbar={true}
+          >
+            {aulas
+              .filter((aula: IAula) => new Date(aula.data) > new Date()) // Filtra aulas futuras
+              .map((aula: IAula) => (
+                <View key={aula._id}>{renderAula(aula, cancelarAula)}</View>
+              ))}
+          </ScrollView>
+        </View>
       </View>
       <MenuInferior />
+      {carregando && <Carregando />}
     </View>
   );
 }

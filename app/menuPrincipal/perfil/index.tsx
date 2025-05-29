@@ -1,257 +1,249 @@
-import { useState } from "react";
 import {
   View,
-  Text,
   TextInput,
-  TouchableOpacity,
-  Image,
   StyleSheet,
+  Text,
+  TouchableOpacity,
 } from "react-native";
-import MenuInferior from "../../components/menuInferior";
-import LogoutButton from "../../components/logoutButton";
-import { useAuth } from "../../../context/auth"; // Importa o contexto
-import { atualizarUsuario } from "./api";
-import formataData from "../../utils/formataData";
-
-const userProfileImageSize = 110;
+import MenuInferior from "../../components/MenuInferior";
+import BotaoLogout from "../../components/BotaoLogout";
+import { IAluno, useAuth } from "../../../context/auth";
+import { useState } from "react";
+import Carregando from "../../components/Carregando";
+import { atualizarUsuario } from "../../../services/apiEditarUsuario";
+import { autenticarLogin } from "../../../context/api";
 
 export default function Perfil() {
-  const { usuario, setUsuario } = useAuth(); // Pega os dados do usuário logado
-  const [isEditing, setIsEditing] = useState(false);
-  const [usuarioEditado, setUsuarioEditado] = useState(usuario); // Editável localmente
+  const { usuario, setUsuario, handleLogin } = useAuth();
+  const [backupUsuario, setBackupUsuario] = useState(usuario);
+  const [editando, setEditando] = useState(false);
+  const [carregando, setCarregando] = useState(false);
+  const [email, setEmail] = useState("");
+  const [senhaAtual, setSenhaAtual] = useState("");
+  const [novaSenha, setNovaSenha] = useState("");
+  const [celular, setCelular] = useState("");
+  const [mostrarErro, setMostrarErro] = useState(false);
 
-  const handleChange = (key, value) => {
-    setUsuarioEditado({ ...usuarioEditado, [key]: value });
-  };
+  const data = new Date(usuario.dataNascimento);
 
-  const handleEdit = () => {
-    setUsuarioEditado(usuario);
-    setIsEditing(true);
-  };
+  const [ano, mes, dia] = data.toISOString().split("T")[0].split("-");
+  const dataExibida = `${dia}/${mes}/${ano}`; // '19/09/2004'
 
-  const handleCancel = () => {
-    setUsuarioEditado(usuario);
-    setIsEditing(false);
-  };
-
-  const handleSave = async () => {
+  const editar = async () => {
+    setCarregando(true);
     try {
-      const dadosAtualizados = {
-        ...usuarioEditado,
-        dataNascimento: new Date(usuarioEditado.dataNascimento),
+      await autenticarLogin(usuario.login, senhaAtual);
+      let senha = senhaAtual;
+      if (novaSenha != "") {
+        senha = novaSenha;
+      }
+      const novosDados: IAluno = {
+        ...usuario,
+        login: email,
+        senha,
+        celular,
       };
+      await atualizarUsuario(backupUsuario.login, novosDados);
 
-      const usuarioAtualizado = await atualizarUsuario(
-        usuario.login,
-        dadosAtualizados
-      );
-      setUsuario(dadosAtualizados); // Atualiza o contexto com os novos dados
-      setIsEditing(false);
+      setUsuario(await autenticarLogin(usuario.login, senha));
+      setBackupUsuario(usuario);
 
+      setMostrarErro(false);
       alert("Dados atualizados com sucesso!");
-    } catch (error) {
-      console.error("Erro ao atualizar:", error);
-      alert("Erro ao salvar dados.");
+      setEditando(false);
+    } catch (erro: any) {
+      if (erro.message === "Erro ao autenticar aluno") setMostrarErro(true);
+    } finally {
+      setCarregando(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      {!isEditing && <LogoutButton style={{ zIndex: 1 }} />}
-
-      <View style={[styles.contentlogo, isEditing && { marginTop: -20 }]}>
-        <View style={[styles.content, isEditing && { marginTop: 40, gap: 30 }]}>
-          <View style={styles.titulo}>
-            <Image
-              source={require("../../../assets/userIcon.png")}
-              style={styles.userphoto}
-            />
-            <Text style={[styles.textCampo, { fontSize: 25, width: "70%" }]}>
-              {usuario.nome}
-            </Text>
-          </View>
-
-          {!isEditing ? (
-            <>
-              <CampoVisual label="CPF" valor={usuario.cpf} />
-              <CampoVisual label="EMAIL" valor={usuario.login} fontSize={14} />
-              <CampoVisual label="SEXO" valor={usuario.sexo} />
-              <CampoVisual label="CELULAR" valor={usuario.celular} />
-              <CampoVisual
-                label={`DATA DE${"\n"}NASCIMENTO`}
-                valor={formataData(usuario.dataNascimento.toString())}
-              />
-            </>
-          ) : (
-            <>
-              <CampoEditavel
-                label="CPF"
-                valor={usuarioEditado.cpf}
-                onChange={(v) => handleChange("cpf", v)}
-              />
-              <CampoEditavel
-                label="EMAIL"
-                valor={usuarioEditado.login}
-                onChange={(v) => handleChange("login", v)}
-              />
-              <CampoEditavel
-                label="SEXO"
-                valor={usuarioEditado.sexo}
-                onChange={(v) => handleChange("sexo", v)}
-              />
-              <CampoEditavel
-                label="CELULAR"
-                valor={usuarioEditado.celular}
-                onChange={(v) => handleChange("celular", v)}
-              />
-              <CampoEditavel
-                label={`DATA DE${"\n"}NASCIMENTO`}
-                valor={formataData(usuario.dataNascimento.toString())}
-                onChange={(v) => handleChange("dataNascimento", v)}
-              />
-            </>
-          )}
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={[styles.button, !isEditing && { marginBottom: 20 }]}
-        onPress={isEditing ? handleSave : handleEdit}
+    <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#eee",
+          gap: 10,
+          padding: 20,
+        }}
       >
-        <Text style={styles.buttonText}>{isEditing ? "Salvar" : "Editar"}</Text>
-      </TouchableOpacity>
+        {!editando ? (
+          <>
+            <BotaoLogout />
+            <View style={{ flex: 1, justifyContent: "center", gap: 30 }}>
+              <View style={{ flexDirection: "row" }}>
+                <Text
+                  style={{
+                    height: "100%",
+                    alignContent: "center",
+                    textAlign: "center",
+                    paddingHorizontal: 20,
+                  }}
+                >
+                  Icon{"\n"}Placeholder
+                </Text>
+                <View style={[styles.inputGroup, { flex: 1 }]}>
+                  <Text style={styles.label}>NOME</Text>
+                  <Text style={styles.inputText}>{usuario.nome || "NOME"}</Text>
+                </View>
+              </View>
 
-      {isEditing && (
-        <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: "red", marginTop: 10, marginBottom: 30 },
-          ]}
-          onPress={handleCancel}
-        >
-          <Text style={styles.buttonText}>Cancelar</Text>
-        </TouchableOpacity>
-      )}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>CPF</Text>
+                <Text style={styles.inputText}>{usuario.cpf || "CPF"}</Text>
+              </View>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>SEXO</Text>
+                <Text style={styles.inputText}>{usuario.sexo || "SEXO"}</Text>
+              </View>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>DATA DE NASCIMENTO</Text>
+                <Text style={styles.inputText}>
+                  {dataExibida || "DATA DE NASCIMENTO"}
+                </Text>
+              </View>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>EMAIL</Text>
+                <Text style={styles.inputText}>{usuario.login || "EMAIL"}</Text>
+              </View>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>CELULAR</Text>
+                <Text style={styles.inputText}>
+                  {usuario.celular || "CELULAR"}
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.editarsalvarButton}
+              onPress={() => {
+                setEmail(usuario.login);
+                setCelular(usuario.celular);
+                setEditando(!editando);
+              }}
+            >
+              <Text style={styles.editarsalvarButtonText}>Editar</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                gap: 30,
+                marginBottom: -55,
+              }}
+            >
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>EMAIL</Text>
+                <TextInput
+                  style={[styles.inputText, { backgroundColor: "white" }]}
+                  placeholder={backupUsuario.login}
+                  placeholderTextColor="#aaa"
+                  defaultValue={usuario.login}
+                  onChangeText={(text) => setEmail(text)}
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                />
+              </View>
 
-      {!isEditing && <MenuInferior />}
-    </View>
-  );
-}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>SENHA ATUAL</Text>
+                <TextInput
+                  style={[styles.inputText, { backgroundColor: "white" }]}
+                  placeholder="Insira sua senha atual"
+                  placeholderTextColor="#aaa"
+                  onChangeText={(text) => setSenhaAtual(text)}
+                  returnKeyType="next"
+                />
+              </View>
 
-function CampoVisual({ label, valor, fontSize = 18 }) {
-  return (
-    <View style={[styles.inputContainer, styles.inputContainerWhileNotEditing]}>
-      <Text style={styles.textCampo}>{label}</Text>
-      <Text style={{ fontSize }}>{valor}</Text>
-    </View>
-  );
-}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>NOVA SENHA</Text>
+                <TextInput
+                  style={[styles.inputText, { backgroundColor: "white" }]}
+                  placeholder="Não preencha para manter a senha atual"
+                  placeholderTextColor="#aaa"
+                  onChangeText={(text) => setNovaSenha(text)}
+                  returnKeyType="next"
+                />
+              </View>
 
-function CampoEditavel({ label, valor, onChange }) {
-  return (
-    <View style={[styles.inputContainer, { paddingHorizontal: 10 }]}>
-      <Text style={styles.textCampo}>{label}</Text>
-      <TextInput style={styles.input} value={valor} onChangeText={onChange} />
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>CELULAR</Text>
+                <TextInput
+                  style={[styles.inputText, { backgroundColor: "white" }]}
+                  placeholder={backupUsuario.celular}
+                  placeholderTextColor="#aaa"
+                  defaultValue={usuario.celular}
+                  onChangeText={(text) => setCelular(text)}
+                  returnKeyType="next"
+                />
+              </View>
+            </View>
+
+            {mostrarErro && <Text>Senha incorreta, dados não alterados</Text>}
+
+            <TouchableOpacity
+              style={styles.editarsalvarButton}
+              onPress={editar}
+            >
+              <Text style={styles.editarsalvarButtonText}>Editar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.editarsalvarButton,
+                { backgroundColor: "#ff6154" },
+              ]}
+              onPress={() => {
+                setUsuario(backupUsuario);
+                setEditando(false);
+              }}
+            >
+              <Text style={styles.editarsalvarButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+      <MenuInferior />
+      {carregando && <Carregando />}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  label: {
+    fontSize: 18,
+    fontWeight: 500,
+    color: "#444",
+    marginBottom: 6,
   },
-  topContainer: {
-    flexDirection: "row",
-    alignItems: "flex-start",
+  inputGroup: {
     width: "100%",
   },
-  logo: {
-    width: 100,
-    height: 50,
-    marginLeft: 10,
-  },
-  titulo: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    width: "100%",
-    marginBottom: 10,
-  },
-  userphoto: {
-    borderRadius: 100,
-    marginRight: 20,
-    width: userProfileImageSize,
-    height: userProfileImageSize,
-    marginLeft: 10,
-  },
-  contentlogo: {
-    flex: 7,
-    marginTop: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  content: {
-    backgroundColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    paddingHorizontal: 20,
-    gap: 15,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 10,
-    width: "100%",
-    justifyContent: "space-between",
-  },
-  inputContainerWhileNotEditing: {
-    borderColor: "#ccc",
-    borderWidth: 2,
-    borderRadius: 20,
-    padding: 15,
-  },
-  input: {
-    flex: 1,
-    height: 45,
-    color: "black",
+  inputText: {
+    fontSize: 14,
+    fontWeight: 400,
+    color: "#000",
     borderWidth: 1,
-    borderColor: "#319594",
-    borderRadius: 20,
-    maxWidth: "55%",
+    borderRadius: 10,
+    borderColor: "#2AA69F",
+    height: 40,
     paddingHorizontal: 10,
+    alignContent: "center",
+    backgroundColor: "#ccc",
   },
-  button: {
-    backgroundColor: "#319594",
-    paddingVertical: 12,
-    borderRadius: 100,
-    width: "90%",
+  editarsalvarButton: {
+    backgroundColor: "#2aa69f",
+    height: "5%",
     justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    elevation: 10,
+    borderRadius: 20,
   },
-  buttonText: {
+  editarsalvarButtonText: {
+    textAlign: "center",
     color: "white",
     fontSize: 20,
-    fontWeight: "700",
-  },
-  link: {
-    color: "black",
-    marginTop: 20,
-    textDecorationLine: "underline",
-    fontSize: 20,
-  },
-  registerLink: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-  },
-  textCampo: {
-    color: "#4B366D",
-    fontWeight: "700",
-    fontSize: 18,
+    fontWeight: 600,
   },
 });

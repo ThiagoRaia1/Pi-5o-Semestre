@@ -1,9 +1,9 @@
-import { IAluno } from "../../../context/auth";
-import { API_URL } from "../../../services/apiUrl";
+import { IAluno } from "../context/auth";
+import { API_URL } from "./apiUrl";
 
 export async function atualizarUsuario(
   login: string,
-  novosDados: Partial<IAluno>
+  novosDados: IAluno
 ) {
   try {
     const resposta = await fetch(`${API_URL}/alunos/${login}`, {
@@ -21,7 +21,7 @@ export async function atualizarUsuario(
 
     const usuarioAtualizado = await resposta.json();
     return usuarioAtualizado;
-  } catch (erro) {
+  } catch (erro: any) {
     console.error("Erro ao atualizar usuário:", erro.message);
     throw erro;
   }

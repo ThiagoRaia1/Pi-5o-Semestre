@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useAuth } from "../context/auth";
-import { Link } from "expo-router";
 import Carregando from "./components/Carregando";
 
 export default function TelaLogin() {
@@ -18,6 +17,17 @@ export default function TelaLogin() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [carregando, setCarregando] = useState(false);
 
+  const login = async () => {
+    setCarregando(true);
+    try {
+      await handleLogin(senha);
+    } catch (erro: any) {
+      console.log("Erro: ", erro.message);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -25,7 +35,7 @@ export default function TelaLogin() {
         style={styles.backgroundImage}
         resizeMode="stretch"
       />
-      <View style={[styles.content, { marginTop: 100 }]}>
+      <View style={styles.content}>
         <View style={styles.inputContainer}>
           <Feather name="mail" size={20} color="black" style={styles.icon} />
           <TextInput
@@ -33,6 +43,7 @@ export default function TelaLogin() {
             placeholder="Email"
             placeholderTextColor="#ccc"
             onChangeText={(text) => setUsuario({ ...usuario, login: text })}
+            onSubmitEditing={login}
           />
         </View>
 
@@ -44,6 +55,7 @@ export default function TelaLogin() {
             placeholderTextColor="#ccc"
             secureTextEntry={!mostrarSenha}
             onChangeText={(text) => setSenha(text)}
+            onSubmitEditing={login}
           />
           <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
             <Feather
@@ -54,26 +66,8 @@ export default function TelaLogin() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            setCarregando(true);
-            try {
-              handleLogin(senha);
-            } catch (erro: any) {
-              console.log(erro.message)
-            } finally {
-              setCarregando(false);
-            }
-          }}
-        >
+        <TouchableOpacity style={styles.button} onPress={login}>
           <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Link href="/menuPrincipal/inicio" style={styles.link}>
-            Esqueci minha senha
-          </Link>
         </TouchableOpacity>
       </View>
       {carregando && <Carregando />}

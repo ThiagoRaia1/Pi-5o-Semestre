@@ -1,4 +1,4 @@
-import { API_URL } from "../../services/apiurl";
+import { API_URL } from "./apiUrl";
 
 export async function agendarAula(emailAluno: string, data: Date) {
   try {

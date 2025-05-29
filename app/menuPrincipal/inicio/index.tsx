@@ -1,133 +1,86 @@
-import { View, Image, Text, StyleSheet } from "react-native";
-import MenuInferior from "../../components/menuInferior";
-import LogoutButton from "../../components/logoutButton";
+import { View, Image, StyleSheet, Text } from "react-native";
+import MenuInferior from "../../components/MenuInferior";
+import BotaoLogout from "../../components/BotaoLogout";
 import { useAuth } from "../../../context/auth";
-import { useState, useEffect } from "react";
-import { getAulasSeguintes } from "../aulas/api";
-import { formataDataAula } from "../../utils/formataData";
 
-export default function Início() {
+export default function Inicio() {
   const { usuario } = useAuth();
-  const [proximaAula, setProximaAula] = useState(null);
-  const [mensagemErro, setMensagemErro] = useState("");
-
-  useEffect(() => {
-    const carregarProximaAula = async () => {
-      try {
-        const aulas = await getAulasSeguintes(usuario.login); // Busca as aulas do aluno
-        if (aulas.length > 0) {
-          // Filtra as aulas futuras
-          const aulasFuturas = aulas.filter(
-            (aula) => new Date(aula.data) > new Date()
-          );
-
-          // Ordena as aulas pela data (ascendente)
-          aulasFuturas.sort(
-            (a, b) => new Date(a.data).getTime() - new Date(b.data).getTime()
-          );
-
-          // Se houver aulas futuras, pega a primeira
-          if (aulasFuturas.length > 0) {
-            setProximaAula(aulasFuturas[0]);
-            setMensagemErro(""); // Limpa qualquer mensagem de erro
-          } else {
-            setMensagemErro("Não há aulas registradas para os próximos dias");
-            setProximaAula(null); // Limpa a aula
-          }
-        } else {
-          setMensagemErro("Não há aulas registradas para os próximos dias");
-          setProximaAula(null); // Limpa a aula
-        }
-      } catch (erro) {
-        console.error("Erro ao buscar próxima aula:", erro);
-        setMensagemErro("Erro ao carregar as aulas");
-        setProximaAula(null); // Limpa a aula
-      }
-    };
-
-    carregarProximaAula();
-  }, [usuario.login]);
-
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          justifyContent: "flex-end",
-          flex: 7,
-          gap: 20,
-          backgroundColor: "#f2f2f0",
-          width: "100%",
-        }}
-      >
+      <View style={styles.content}>
+        <BotaoLogout />
         <Image
           source={require("../../../assets/fundoInicio.png")}
           style={styles.backgroundImage}
           resizeMode="stretch"
         />
-        <LogoutButton />
-        <Text
-          style={{
-            fontSize: 30,
-            color: "white",
-            fontWeight: 900,
-            paddingHorizontal: 20,
-            textShadowColor: "black", // Cor da borda
-            textShadowOffset: { width: 1, height: 1 }, // Espessura da sombra
-            textShadowRadius: 10, // Suaviza a borda
-          }}
-        >
-          Bem vindo, {usuario.nome.split(" ", 1)}
-        </Text>
+
         <View
           style={{
-            marginTop: -20,
-            marginBottom: -10,
-            backgroundColor: "white",
-            marginHorizontal: 20,
-            minWidth: "90%",
-            minHeight: "40%",
-            maxHeight: "40%",
-            borderRadius: 20,
-            borderColor: "#ccc",
-            borderWidth: 2,
-            justifyContent: "center",
+            gap: 5,
+            width: "100%",
+            padding: 20,
           }}
         >
           <Text
             style={{
-              fontSize: 24,
-              color: "black",
-              fontWeight: 400,
-              paddingHorizontal: 20,
-              marginBottom: 5,
-            }}
-          >
-            Sua próxima aula é:
-          </Text>
-          <Text
-            style={{
-              marginHorizontal: 20,
-              minHeight: "20%",
               fontSize: 20,
-              fontWeight: "300",
-              borderWidth: 1,
-              borderRadius: 20,
-              borderColor: "#ccc",
-              textAlign: "center",
-              textAlignVertical: "center",
-              padding: 10, // Evita que o texto fique colado na borda
+              fontWeight: "700",
+              color: "white",
+              textShadowColor: "black", // Cor da borda
+              textShadowOffset: { width: 1, height: 1 }, // Espessura da sombra
+              textShadowRadius: 10, // Suaviza a borda
             }}
           >
-            {proximaAula
-              ? (() => {
-                  const dataFormatada = formataDataAula(proximaAula.data);
-                  return `${dataFormatada.diaSemana}, ${dataFormatada.dia}\n${dataFormatada.hora}`;
-                })()
-              : mensagemErro}
+            {/* Mostra só o primeiro nome */}
+            Bem vindo, {usuario.nome.split(" ", 1)}
           </Text>
+
+          <View
+            style={{
+              backgroundColor: "white",
+              borderWidth: 2,
+              borderRadius: 10,
+              borderColor: "#ccc",
+              height: 250,
+              padding: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                marginBottom: 10,
+              }}
+            >
+              Sua próxima aula é:
+            </Text>
+
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 10,
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: "#ccc",
+                width: "100%",
+                height: "80%",
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: 24,
+                }}
+              >
+                Quarta-feira, 02 de abril:{"\n"}7:30
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
-      <MenuInferior></MenuInferior>
+      <MenuInferior />
     </View>
   );
 }
@@ -136,8 +89,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  content: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
   backgroundImage: {
-    flex: 8,
     position: "absolute",
     width: "100%",
     height: "100%",
