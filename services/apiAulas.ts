@@ -1,4 +1,10 @@
-import { API_URL } from "../../services/apiurl";
+import { API_URL } from "./apiUrl";
+
+export interface IAula {
+  _id: string,
+  emailAluno: string,
+  data: Date
+}
 
 export async function getAulasSeguintes(login: string) {
   try {
@@ -16,16 +22,16 @@ export async function getAulasSeguintes(login: string) {
 
     const usuarioAtualizado = await resposta.json();
     return usuarioAtualizado;
-  } catch (erro) {
+  } catch (erro: any) {
     console.error("Erro ao carregar aulas:", erro.message);
     throw erro;
   }
 }
 
 
-export async function excluirAula(login: string, dataHora: Date) {
+export async function excluirAula(id: string) {
   try {
-    const response = await fetch(`${API_URL}/${login}/${dataHora}`, {
+    const response = await fetch(`${API_URL}/aulas/${id}`, {
       method: 'DELETE',
     });
 

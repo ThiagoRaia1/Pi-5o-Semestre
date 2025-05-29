@@ -8,10 +8,10 @@ import {
 } from "react-native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { Text, Button } from "react-native-paper";
-import MenuInferior from "../../components/menuInferior";
-import LogoutButton from "../../components/logoutButton";
+import MenuInferior from "../../components/MenuInferior";
+import BotaoLogout from "../../components/BotaoLogout";
 import { useAuth } from "../../../context/auth";
-import { agendarAula } from "./api";
+import { agendarAula } from "../../../services/apiAgendar";
 import formataData from "../../utils/formataData";
 
 LocaleConfig.locales["pt-br"] = {
@@ -67,11 +67,10 @@ const SchedulingScreen = () => {
   const generateTimes = () => {
     let times = [];
     for (let hour = 6; hour <= 17; hour++) {
-      times.push(`${String(hour).padStart(2, '0')}:00`);
+      times.push(`${String(hour).padStart(2, "0")}:00`);
     }
     return times;
   };
-
 
   const times = generateTimes();
 
@@ -93,7 +92,7 @@ const SchedulingScreen = () => {
           style={styles.backgroundImage}
           resizeMode="stretch"
         />
-        <LogoutButton />
+        <BotaoLogout />
         {/* Título */}
         <Text style={styles.title}>Escolha data e horário</Text>
 
@@ -171,11 +170,17 @@ const SchedulingScreen = () => {
               // console.log(usuario.login);
               // console.log(selectedDate);
               // console.log(selectedTime);
-              const data = new Date(`${selectedDate}T${selectedTime}Z`);
+              const [year, month, day] = selectedDate.split("-").map(Number);
+              const [hour, minute] = selectedTime.split(":").map(Number);
+
+              const data = new Date(year, month - 1, day, hour, minute);
+              console.log(data);
               // alert(data);
               await agendarAula(usuario.login, data);
               alert(
-                `Agendado para ${formataData(selectedDate)} às ${selectedTime}`
+                `Agendado para ${formataData(
+                  data.toISOString()
+                )} às ${selectedTime}`
               );
             }
           }}
