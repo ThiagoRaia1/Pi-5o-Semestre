@@ -118,7 +118,7 @@ export default function Inicio() {
                 {proximaAula ? (() => {
                   const dataFormatada = formataDataAula(proximaAula.data);
                   return `${dataFormatada.diaSemana}, ${dataFormatada.dia}\n${dataFormatada.hora}`;
-                })() : mensagemErro}
+                })() : mensagemErro || "Carregando..."}
               </Text>
             </View>
           </View>
