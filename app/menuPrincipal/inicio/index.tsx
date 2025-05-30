@@ -2,9 +2,50 @@ import { View, Image, StyleSheet, Text } from "react-native";
 import MenuInferior from "../../components/MenuInferior";
 import BotaoLogout from "../../components/BotaoLogout";
 import { useAuth } from "../../../context/auth";
+import { useState, useEffect } from 'react';
+import {getAulasSeguintes} from '../../../services/apiAulas';
+import { formataDataAula } from '../../utils/formataData';
 
 export default function Inicio() {
   const { usuario } = useAuth();
+
+  const [proximaAula, setProximaAula] = useState(null);
+  const [mensagemErro, setMensagemErro] = useState('');
+
+  useEffect(() => {
+    const carregarProximaAula = async () => {
+      try {
+        const aulas = await getAulasSeguintes(usuario.login); // Busca as aulas do aluno
+        if (aulas.length > 0) {
+          // Filtra as aulas futuras
+          const aulasFuturas = aulas.filter((aula) => new Date(aula.data) > new Date());
+
+          // Ordena as aulas pela data (ascendente)
+          aulasFuturas.sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime());
+
+          // Se houver aulas futuras, pega a primeira
+          if (aulasFuturas.length > 0) {
+            setProximaAula(aulasFuturas[0]);
+            setMensagemErro(''); // Limpa qualquer mensagem de erro
+          } else {
+            setMensagemErro('Não há aulas registradas para os próximos dias');
+            setProximaAula(null); // Limpa a aula
+          }
+        } else {
+          setMensagemErro('Não há aulas registradas para os próximos dias');
+          setProximaAula(null); // Limpa a aula
+        }
+      } catch (erro) {
+        console.error('Erro ao buscar próxima aula:', erro);
+        setMensagemErro('Erro ao carregar as aulas');
+        setProximaAula(null); // Limpa a aula
+      }
+    };
+
+    carregarProximaAula();
+  }, [usuario.login]);
+
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -74,7 +115,10 @@ export default function Inicio() {
                   fontSize: 24,
                 }}
               >
-                Quarta-feira, 02 de abril:{"\n"}7:30
+                {proximaAula ? (() => {
+                  const dataFormatada = formataDataAula(proximaAula.data);
+                  return `${dataFormatada.diaSemana}, ${dataFormatada.dia}\n${dataFormatada.hora}`;
+                })() : mensagemErro}
               </Text>
             </View>
           </View>
