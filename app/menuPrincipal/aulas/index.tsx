@@ -79,6 +79,7 @@ export default function Aulas() {
       alert("Aula desmarcada com sucesso!");
     } catch (error) {
       console.error("Erro ao cancelar aula:", error);
+    } finally {
       setCarregando(false)
     }
   };
