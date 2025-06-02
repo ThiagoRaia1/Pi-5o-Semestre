@@ -5,14 +5,15 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Text,
 } from "react-native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
-import { Text, Button } from "react-native-paper";
 import MenuInferior from "../../components/MenuInferior";
 import BotaoLogout from "../../components/BotaoLogout";
 import { useAuth } from "../../../context/auth";
 import { agendarAula } from "../../../services/apiAgendar";
 import formataData from "../../utils/formataData";
+import Carregando from "../../components/Carregando";
 
 LocaleConfig.locales["pt-br"] = {
   monthNames: [
@@ -58,12 +59,13 @@ LocaleConfig.locales["pt-br"] = {
 
 LocaleConfig.defaultLocale = "pt-br";
 
-const SchedulingScreen = () => {
+export default function SchedulingScreen() {
   const { usuario } = useAuth();
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
-  // Gera os horários automaticamente (06:00 até 18:00, intervalos de 1 hora)
+  // Gera os horários automaticamente (06:00 até 17:00, intervalos de 1 hora)
   const generateTimes = () => {
     let times = [];
     for (let hour = 6; hour <= 17; hour++) {
@@ -85,7 +87,7 @@ const SchedulingScreen = () => {
   const groupedTimes = chunkTimes(times, 4);
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <View style={styles.mainContent}>
         <Image
           source={require("../../../assets/fundoAgendar.png")}
@@ -133,25 +135,27 @@ const SchedulingScreen = () => {
               key={rowIndex}
               style={[
                 styles.timeRow,
-                row.length < 4 && styles.justifyRow, // Justifica última linha se houver menos de 4 itens
+                row.length < 4 && { justifyContent: "center" },
               ]}
             >
               {row.map((time) => (
-                <Button
+                <TouchableOpacity
                   key={time}
-                  mode={selectedTime === time ? "elevated" : "outlined"}
                   style={[
-                    styles.timeButton,
-                    selectedTime === time && styles.selectedTime,
-                  ]}
-                  labelStyle={[
-                    { marginHorizontal: -20, fontSize: 18 },
-                    selectedTime === time && { color: "white" },
+                    styles.timeTouchable,
+                    selectedTime === time && { backgroundColor: "#33A89E" },
                   ]}
                   onPress={() => setSelectedTime(time)}
                 >
-                  {time}
-                </Button>
+                  <Text
+                    style={[
+                      styles.timeText,
+                      selectedTime === time && { color: "white" },
+                    ]}
+                  >
+                    {time}
+                  </Text>
+                </TouchableOpacity>
               ))}
             </View>
           ))}
@@ -161,43 +165,42 @@ const SchedulingScreen = () => {
         <TouchableOpacity
           style={styles.agendarButton}
           onPress={async () => {
-            if (selectedDate == "" || selectedTime == "") {
-              alert(`Escolha uma data e um horário.`);
-            } else {
-              alert(
-                `login: ${usuario.login} / selectedDate: ${selectedDate} / selectedTime: ${selectedTime}`
-              );
-              // console.log(usuario.login);
-              // console.log(selectedDate);
-              // console.log(selectedTime);
-              const [year, month, day] = selectedDate.split("-").map(Number);
-              const [hour, minute] = selectedTime.split(":").map(Number);
+            setCarregando(true);
+            try {
+              if (selectedDate == "" || selectedTime == "") {
+                alert(`Escolha uma data e um horário.`);
+              } else {
+                // console.log(usuario.login);
+                // console.log(selectedDate);
+                // console.log(selectedTime);
+                const [year, month, day] = selectedDate.split("-").map(Number);
+                const [hour, minute] = selectedTime.split(":").map(Number);
 
-              const data = new Date(year, month - 1, day, hour, minute);
-              console.log(data);
-              // alert(data);
-              await agendarAula(usuario.login, data);
-              alert(
-                `Agendado para ${formataData(
-                  data.toISOString()
-                )} às ${selectedTime}`
-              );
+                const data = new Date(year, month - 1, day, hour, minute);
+                await agendarAula(usuario.login, data);
+                alert(
+                  `Agendado para ${formataData(
+                    data.toISOString()
+                  )} às ${selectedTime}`
+                );
+              }
+            } catch (erro: any) {
+              console.log(erro.message);
+            } finally {
+              setCarregando(false);
             }
           }}
-          /* disabled={!selectedDate || !selectedTime} // Bloqueia se nada for selecionado */
         >
           <Text style={{ color: "white", fontSize: 18 }}>Agendar</Text>
         </TouchableOpacity>
       </View>
       <MenuInferior />
+      {carregando && <Carregando />}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   mainContent: {
     justifyContent: "center",
     flex: 7,
@@ -234,17 +237,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 10,
   },
-  justifyRow: {
-    justifyContent: "center", // Justifica última linha se houver menos de 4 itens
-  },
   timeButton: {
     marginHorizontal: 5,
     borderRadius: 20,
     width: "22%", // Garante que 4 botões cabem na mesma linha,
     backgroundColor: "white",
-  },
-  selectedTime: {
-    backgroundColor: "#33A89E",
   },
   agendarButton: {
     backgroundColor: "#319594",
@@ -257,6 +254,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
     elevation: 10,
   },
+  timeTouchable: {
+    marginHorizontal: 5,
+    borderRadius: 20,
+    width: "22%",
+    backgroundColor: "white",
+    paddingVertical: 10,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  timeText: {
+    fontSize: 18,
+    color: "#333",
+  },
 });
-
-export default SchedulingScreen;
