@@ -28,11 +28,40 @@ export default function Perfil() {
   const [celular, setCelular] = useState("");
   const [mostrarErro, setMostrarErro] = useState(false);
 
+  const [erros, setErros] = useState<{
+    email?: string;
+    senhaAtual?: string;
+    celular?: string;
+  }>({});
+
   const data = new Date(usuario.dataNascimento);
   const [ano, mes, dia] = data.toISOString().split("T")[0].split("-");
   const dataExibida = `${dia}/${mes}/${ano}`;
 
+  const validarCampos = () => {
+    const novosErros: { email?: string; senhaAtual?: string; celular?: string } = {};
+
+    if (!email.trim()) {
+      novosErros.email = "Email é obrigatório.";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) novosErros.email = "Email inválido.";
+    }
+    if (!senhaAtual.trim()) novosErros.senhaAtual = "Senha é obrigatória.";
+    if (!celular.trim()) {
+      novosErros.celular = "Celular é obrigatório.";
+    } else {
+      const celularRegex = /^\(\d{2}\)\d{5}-\d{4}$/;
+      if (!celularRegex.test(celular)) novosErros.celular = "Formato inválido.";
+    }
+
+    setErros(novosErros);
+    return Object.keys(novosErros).length === 0;
+  };
+
   const editar = async () => {
+
+    if (!validarCampos()) return;
     setCarregando(true);
     try {
       await autenticarLogin(usuario.login, senhaAtual);
@@ -112,24 +141,33 @@ export default function Perfil() {
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Email</Text>
                 <TextInput
-                  style={styles.inputField}
+                  style={[styles.inputField, { backgroundColor: "white" }, erros.email && { borderColor: "red", borderWidth: 1 }]}
                   placeholder={backupUsuario.login}
                   placeholderTextColor={"#aaa"}
                   defaultValue={usuario.login}
-                  onChangeText={setEmail}
+                  onChangeText={(text) => {
+                    setEmail(text);
+
+                    setErros((prev) => ({ ...prev, email: undefined }));
+                  }}
                   keyboardType="email-address"
                 />
+                {erros.email && <Text style={styles.errorText}>{erros.email}</Text>}
               </View>
 
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Senha atual</Text>
                 <TextInput
-                  style={styles.inputField}
+                  style={[styles.inputField, { backgroundColor: "white" }, erros.senhaAtual && { borderColor: "red", borderWidth: 1 }]}
                   placeholder="Insira sua senha atual"
                   placeholderTextColor={"#aaa"}
                   secureTextEntry
-                  onChangeText={setSenhaAtual}
+                  onChangeText={(text) => {
+                    setSenhaAtual(text);
+                    setErros((prev) => ({ ...prev, senhaAtual: undefined }));
+                  }}
                 />
+                {erros.senhaAtual && <Text style={styles.errorText}>{erros.senhaAtual}</Text>}
               </View>
 
               <View style={styles.inputGroup}>
@@ -146,13 +184,17 @@ export default function Perfil() {
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Celular</Text>
                 <TextInput
-                  style={styles.inputField}
+                  style={[styles.inputText, { backgroundColor: "white" }, erros.celular && { borderColor: "red", borderWidth: 1 }]}
                   placeholder={backupUsuario.celular}
                   placeholderTextColor={"#aaa"}
                   defaultValue={usuario.celular}
-                  onChangeText={setCelular}
                   keyboardType="phone-pad"
+                  onChangeText={(text) => {
+                    setCelular(text);
+                    setErros((prev) => ({ ...prev, celular: undefined }));
+                  }}
                 />
+                {erros.celular && <Text style={styles.errorText}>{erros.celular}</Text>}
               </View>
 
               {mostrarErro && (
@@ -161,7 +203,7 @@ export default function Perfil() {
                 </Text>
               )}
 
-              <View style={{gap: 10}}>
+              <View style={{ gap: 10 }}>
                 <TouchableOpacity style={styles.saveButton} onPress={editar}>
                   <Text style={styles.buttonText}>Salvar alterações</Text>
                 </TouchableOpacity>
