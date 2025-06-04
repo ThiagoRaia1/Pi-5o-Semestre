@@ -57,17 +57,23 @@ export default function SchedulingScreen() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState("");
+  const [mostrarErro, setMostrarErro] = useState(false);
 
-  // Gera os horários automaticamente (06:00 até 17:00, intervalos de 1 hora)
-  const generateTimes = () => {
-    let times = [];
-    for (let hour = 6; hour <= 17; hour++) {
-      times.push(`${String(hour).padStart(2, "0")}:00`);
-    }
-    return times;
-  };
-
-  const times = generateTimes();
+  let times = [
+    "06:00",
+    "07:00",
+    "08:00",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+  ];
 
   return (
     <View style={{ flex: 1 }}>
@@ -125,6 +131,7 @@ export default function SchedulingScreen() {
           style={styles.agendarButton}
           onPress={async () => {
             setCarregando(true);
+            setMostrarErro(false);
             try {
               if (selectedDate == "" || selectedTime == "") {
                 alert(`Escolha uma data e um horário.`);
@@ -138,8 +145,10 @@ export default function SchedulingScreen() {
                   `Agendado para ${data.toLocaleDateString()} às ${selectedTime}`
                 );
               }
-            } catch (erro: any) {
-              console.log(erro.message);
+            } catch (error: any) {
+              setErro(error.message);
+              console.log("erro: ", erro);
+              setMostrarErro(true);
             } finally {
               setCarregando(false);
             }
@@ -147,6 +156,8 @@ export default function SchedulingScreen() {
         >
           <Text style={{ color: "white", fontSize: 18 }}>Agendar</Text>
         </TouchableOpacity>
+
+        {mostrarErro && <Text style={styles.errorText}>{erro}</Text>}
       </View>
       <MenuInferior />
       {carregando && <Carregando />}
@@ -204,5 +215,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 0,
     borderRadius: 10,
+  },
+  errorText: {
+    color: "#e53935",
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 10,
+    fontWeight: 700,
   },
 });
