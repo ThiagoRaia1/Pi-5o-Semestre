@@ -2,49 +2,52 @@ import { View, Image, StyleSheet, Text } from "react-native";
 import MenuInferior from "../../components/MenuInferior";
 import BotaoLogout from "../../components/BotaoLogout";
 import { useAuth } from "../../../context/auth";
-import { useState, useEffect } from 'react';
-import {getAulasSeguintes} from '../../../services/apiAulas';
-import { formataDataAula } from '../../utils/formataData';
+import { useState, useEffect } from "react";
+import { getAulasSeguintes, IAula } from "../../../services/apiAulas";
 
 export default function Inicio() {
   const { usuario } = useAuth();
 
-  const [proximaAula, setProximaAula] = useState(null);
-  const [mensagemErro, setMensagemErro] = useState('');
+  const [proximaAula, setProximaAula] = useState<IAula>(null);
+
+  const [mensagemErro, setMensagemErro] = useState("");
 
   useEffect(() => {
     const carregarProximaAula = async () => {
       try {
-        const aulas = await getAulasSeguintes(usuario.login); // Busca as aulas do aluno
+        const aulas: IAula[] = await getAulasSeguintes(usuario.login);
         if (aulas.length > 0) {
-          // Filtra as aulas futuras
-          const aulasFuturas = aulas.filter((aula) => new Date(aula.data) > new Date());
+          const aulasFuturas: IAula[] = aulas.filter(
+            (aula) => new Date(aula.data) > new Date()
+          );
 
-          // Ordena as aulas pela data (ascendente)
-          aulasFuturas.sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime());
+          aulasFuturas.sort(
+            (a, b) => new Date(a.data).getTime() - new Date(b.data).getTime()
+          );
 
-          // Se houver aulas futuras, pega a primeira
           if (aulasFuturas.length > 0) {
-            setProximaAula(aulasFuturas[0]);
-            setMensagemErro(''); // Limpa qualquer mensagem de erro
+            setProximaAula({
+              ...aulasFuturas[0],
+              data: new Date(aulasFuturas[0].data),
+            });
+            setMensagemErro("");
           } else {
-            setMensagemErro('Não há aulas registradas para os próximos dias');
-            setProximaAula(null); // Limpa a aula
+            setMensagemErro("Não há aulas registradas para os próximos dias");
+            setProximaAula(null);
           }
         } else {
-          setMensagemErro('Não há aulas registradas para os próximos dias');
-          setProximaAula(null); // Limpa a aula
+          setMensagemErro("Não há aulas registradas para os próximos dias");
+          setProximaAula(null);
         }
       } catch (erro) {
-        console.error('Erro ao buscar próxima aula:', erro);
-        setMensagemErro('Erro ao carregar as aulas');
-        setProximaAula(null); // Limpa a aula
+        console.error("Erro ao buscar próxima aula:", erro);
+        setMensagemErro("Erro ao carregar as aulas");
+        setProximaAula(null);
       }
     };
 
     carregarProximaAula();
   }, [usuario.login]);
-
 
   return (
     <View style={styles.container}>
@@ -115,10 +118,23 @@ export default function Inicio() {
                   fontSize: 24,
                 }}
               >
-                {proximaAula ? (() => {
-                  const dataFormatada = formataDataAula(proximaAula.data);
-                  return `${dataFormatada.diaSemana}, ${dataFormatada.dia}\n${dataFormatada.hora}`;
-                })() : mensagemErro || "Carregando..."}
+                {proximaAula
+                  ? (() => {
+                      return `${
+                        proximaAula.data.toLocaleDateString() +
+                        ", " +
+                        proximaAula.data.toLocaleDateString("pt-BR", {
+                          weekday: "long",
+                        }) +
+                        `, ${"\n"}` +
+                        proximaAula.data.toLocaleTimeString("pt-BR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false, // 24h format
+                        })
+                      }`;
+                    })()
+                  : mensagemErro || "Carregando..."}
               </Text>
             </View>
           </View>

@@ -39,7 +39,7 @@ export default function TelaLogin() {
         <View style={styles.inputContainer}>
           <Feather name="mail" size={20} color="black" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, {outline: "none"} as any]}
             placeholder="Email"
             placeholderTextColor="#ccc"
             onChangeText={(text) => setUsuario({ ...usuario, login: text })}
@@ -50,7 +50,7 @@ export default function TelaLogin() {
         <View style={styles.inputContainer}>
           <Feather name="lock" size={20} color="black" style={styles.icon} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, {outline: "none"} as any]}
             placeholder="Senha"
             placeholderTextColor="#ccc"
             secureTextEntry={!mostrarSenha}

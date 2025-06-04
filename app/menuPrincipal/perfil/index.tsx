@@ -39,20 +39,40 @@ export default function Perfil() {
   const dataExibida = `${dia}/${mes}/${ano}`;
 
   const validarCampos = () => {
-    const novosErros: { email?: string; senhaAtual?: string; celular?: string } = {};
+    const novosErros: {
+      email?: string;
+      senhaAtual?: string;
+      celular?: string;
+    } = {};
 
     if (!email.trim()) {
       novosErros.email = "Email é obrigatório.";
     } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      // [a-zA-Z0-9._%+-]+ – Parte do usuário - Letras, números, ponto ., underline _, porcentagem %, mais +, hífen -
+      // + → Um ou mais desses caracteres
+
+      // @ – O caractere @
+
+      // [a-zA-Z0-9.-]+ – Parte do domínio:
+      // Letras, números, ponto ., hífen -
+      // + → Um ou mais desses caracteres
+
+      // \. – Ponto separando domínio e TLD
+
+      // [a-zA-Z]{2,} – O domínio de topo (TLD, tipo .com, .br, .org etc.):
+      // Apenas letras e pelo menos dois caracteres
+
+      // $ – Fim da string
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       if (!emailRegex.test(email)) novosErros.email = "Email inválido.";
     }
-    if (!senhaAtual.trim()) novosErros.senhaAtual = "Senha é obrigatória.";
+    if (!senhaAtual.trim()) novosErros.senhaAtual = "A senha atual é obrigatória para atualização dos dados.";
     if (!celular.trim()) {
       novosErros.celular = "Celular é obrigatório.";
     } else {
       const celularRegex = /^\(\d{2}\)\d{5}-\d{4}$/;
-      if (!celularRegex.test(celular)) novosErros.celular = "Formato inválido.";
+      if (!celularRegex.test(celular))
+        novosErros.celular = "Formato inválido\n(99)99999-9999.";
     }
 
     setErros(novosErros);
@@ -60,7 +80,6 @@ export default function Perfil() {
   };
 
   const editar = async () => {
-
     if (!validarCampos()) return;
     setCarregando(true);
     try {
@@ -141,7 +160,11 @@ export default function Perfil() {
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Email</Text>
                 <TextInput
-                  style={[styles.inputField, { backgroundColor: "white" }, erros.email && { borderColor: "red", borderWidth: 1 }]}
+                  style={[
+                    styles.inputField,
+                    { backgroundColor: "white" },
+                    erros.email && { borderColor: "red", borderWidth: 1 },
+                  ]}
                   placeholder={backupUsuario.login}
                   placeholderTextColor={"#aaa"}
                   defaultValue={usuario.login}
@@ -152,13 +175,19 @@ export default function Perfil() {
                   }}
                   keyboardType="email-address"
                 />
-                {erros.email && <Text style={styles.errorText}>{erros.email}</Text>}
+                {erros.email && (
+                  <Text style={styles.errorText}>{erros.email}</Text>
+                )}
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Senha atual</Text>
+                <Text style={styles.label}>Senha atual*</Text>
                 <TextInput
-                  style={[styles.inputField, { backgroundColor: "white" }, erros.senhaAtual && { borderColor: "red", borderWidth: 1 }]}
+                  style={[
+                    styles.inputField,
+                    { backgroundColor: "white" },
+                    erros.senhaAtual && { borderColor: "red", borderWidth: 1 },
+                  ]}
                   placeholder="Insira sua senha atual"
                   placeholderTextColor={"#aaa"}
                   secureTextEntry
@@ -167,7 +196,9 @@ export default function Perfil() {
                     setErros((prev) => ({ ...prev, senhaAtual: undefined }));
                   }}
                 />
-                {erros.senhaAtual && <Text style={styles.errorText}>{erros.senhaAtual}</Text>}
+                {erros.senhaAtual && (
+                  <Text style={styles.errorText}>{erros.senhaAtual}</Text>
+                )}
               </View>
 
               <View style={styles.inputGroup}>
@@ -184,7 +215,11 @@ export default function Perfil() {
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Celular</Text>
                 <TextInput
-                  style={[styles.inputText, { backgroundColor: "white" }, erros.celular && { borderColor: "red", borderWidth: 1 }]}
+                  style={[
+                    styles.inputText,
+                    { backgroundColor: "white" },
+                    erros.celular && { borderColor: "red", borderWidth: 1 },
+                  ]}
                   placeholder={backupUsuario.celular}
                   placeholderTextColor={"#aaa"}
                   defaultValue={usuario.celular}
@@ -194,7 +229,9 @@ export default function Perfil() {
                     setErros((prev) => ({ ...prev, celular: undefined }));
                   }}
                 />
-                {erros.celular && <Text style={styles.errorText}>{erros.celular}</Text>}
+                {erros.celular && (
+                  <Text style={styles.errorText}>{erros.celular}</Text>
+                )}
               </View>
 
               {mostrarErro && (
