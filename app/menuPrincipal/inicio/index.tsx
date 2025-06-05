@@ -4,12 +4,11 @@ import BotaoLogout from "../../components/BotaoLogout";
 import { useAuth } from "../../../context/auth";
 import { useState, useEffect } from "react";
 import { getAulasSeguintes, IAula } from "../../../services/apiAulas";
+import * as Animatable from "react-native-animatable";
 
 export default function Inicio() {
   const { usuario } = useAuth();
-
   const [proximaAula, setProximaAula] = useState<IAula>(null);
-
   const [mensagemErro, setMensagemErro] = useState("");
 
   useEffect(() => {
@@ -59,86 +58,46 @@ export default function Inicio() {
           resizeMode="stretch"
         />
 
-        <View
-          style={{
-            gap: 5,
-            width: "100%",
-            padding: 20,
-          }}
+        <Animatable.View
+          animation="fadeInUp"
+          duration={1000}
+          style={{ width: "100%" }}
         >
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "700",
-              color: "white",
-              textShadowColor: "black", // Cor da borda
-              textShadowOffset: { width: 1, height: 1 }, // Espessura da sombra
-              textShadowRadius: 10, // Suaviza a borda
-            }}
-          >
-            {/* Mostra só o primeiro nome */}
-            Bem vindo, {usuario.nome.split(" ", 1)}
-          </Text>
-
-          <View
-            style={{
-              backgroundColor: "white",
-              borderWidth: 2,
-              borderRadius: 10,
-              borderColor: "#ccc",
-              height: 250,
-              padding: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                marginBottom: 10,
-              }}
-            >
-              Sua próxima aula é:
+          <View style={{ width: "100%", gap: 5, padding: 20 }}>
+            <Text style={styles.welcomeText}>
+              {/* Mostra só o primeiro nome */}
+              Bem vindo, {usuario.nome.split(" ", 1)}
             </Text>
 
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 10,
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "#ccc",
-                width: "100%",
-                height: "80%",
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: 24,
-                }}
-              >
-                {proximaAula
-                  ? (() => {
-                      return `${
-                        proximaAula.data.toLocaleDateString() +
-                        ", " +
-                        proximaAula.data.toLocaleDateString("pt-BR", {
-                          weekday: "long",
-                        }) +
-                        `, ${"\n"}` +
-                        proximaAula.data.toLocaleTimeString("pt-BR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false, // 24h format
-                        })
-                      }`;
-                    })()
-                  : mensagemErro || "Carregando..."}
+            <View style={styles.proxAulaMainView}>
+              <Text style={{ fontSize: 20, marginBottom: 10 }}>
+                Sua próxima aula é:
               </Text>
+
+              <View style={styles.proxAulaSubView}>
+                <Text style={styles.proxAulaSubText}>
+                  {proximaAula
+                    ? (() => {
+                        return `${
+                          proximaAula.data.toLocaleDateString() +
+                          ", " +
+                          proximaAula.data.toLocaleDateString("pt-BR", {
+                            weekday: "long",
+                          }) +
+                          `, ${"\n"}` +
+                          proximaAula.data.toLocaleTimeString("pt-BR", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false, // 24h format
+                          })
+                        }`;
+                      })()
+                    : mensagemErro || "Carregando..."}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
+        </Animatable.View>
       </View>
       <MenuInferior />
     </View>
@@ -158,5 +117,36 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
+  },
+  welcomeText: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "white",
+    textShadowColor: "black", // Cor da borda
+    textShadowOffset: { width: 1, height: 1 }, // Espessura da sombra
+    textShadowRadius: 10, // Suaviza a borda
+  },
+  proxAulaMainView: {
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: "#ccc",
+    height: 250,
+    padding: 10,
+  },
+  proxAulaSubView: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    width: "100%",
+    height: "80%",
+  },
+  proxAulaSubText: {
+    textAlign: "center",
+    color: "black",
+    fontSize: 24,
   },
 });

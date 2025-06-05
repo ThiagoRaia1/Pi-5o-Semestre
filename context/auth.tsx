@@ -10,6 +10,7 @@ export interface IAluno {
   celular: string;
   dataNascimento: Date;
   senha: string;
+  imagem: string
 }
 
 interface IAuthContext {
@@ -33,6 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     celular: "",
     dataNascimento: new Date(0),
     senha: "",
+    imagem: "",
   });
 
   async function handleLogin(senha: string) {

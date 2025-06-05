@@ -90,7 +90,16 @@ export default function SchedulingScreen() {
         {/* Calendário */}
         <View style={{ paddingHorizontal: 20 }}>
           <Calendar
-            onDayPress={(day) => setSelectedDate(day.dateString)}
+            onDayPress={(day) => {
+              const selected = day.dateString;
+
+              if (new Date(selected) < new Date()) {
+                alert("Agendamentos devem ser feitos um dia antes da data.");
+                setSelectedDate("");
+              } else {
+                setSelectedDate(selected);
+              }
+            }}
             markedDates={{
               [selectedDate]: { selected: true, selectedColor: "#33A89E" },
             }}
@@ -202,19 +211,16 @@ const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
     backgroundColor: "#aaa",
-    borderRadius: 10,
     marginTop: 10,
-    borderWidth: 2,
-    borderColor: "#ccc",
+    borderRadius: 20,
   },
   picker: {
     height: 50,
     width: "100%",
     color: "#333",
     backgroundColor: "white",
+    borderRadius: 20,
     padding: 10,
-    borderWidth: 0,
-    borderRadius: 10,
   },
   errorText: {
     color: "#e53935",

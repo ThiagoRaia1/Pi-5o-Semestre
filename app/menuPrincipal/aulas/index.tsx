@@ -16,6 +16,7 @@ import {
   getAulasSeguintes,
   IAula,
 } from "../../../services/apiAulas";
+import * as Animatable from "react-native-animatable";
 
 function renderAula(aula: IAula, onCancelar: (aula: IAula) => void) {
   const dataAula = new Date(aula.data);
@@ -72,7 +73,7 @@ export default function Aulas() {
 
   // Função para cancelar a aula
   const cancelarAula = async (aula: IAula) => {
-    setCarregando(true)
+    setCarregando(true);
     try {
       await excluirAula(aula._id); // Chama a API para excluir a aula
       setAulas((prev) => prev.filter((a: IAula) => a._id !== aula._id)); // Remove a aula da lista
@@ -80,7 +81,7 @@ export default function Aulas() {
     } catch (error) {
       console.error("Erro ao cancelar aula:", error);
     } finally {
-      setCarregando(false)
+      setCarregando(false);
     }
   };
 
@@ -102,8 +103,15 @@ export default function Aulas() {
           >
             {aulas
               .filter((aula: IAula) => new Date(aula.data) > new Date()) // Filtra aulas futuras
-              .map((aula: IAula) => (
-                <View key={aula._id}>{renderAula(aula, cancelarAula)}</View>
+              .map((aula: IAula, index: number) => (
+                <Animatable.View
+                  key={aula._id}
+                  animation="fadeInUp"
+                  duration={1000}
+                  delay={index * 150}
+                >
+                  <View key={aula._id}>{renderAula(aula, cancelarAula)}</View>
+                </Animatable.View>
               ))}
           </ScrollView>
         </View>

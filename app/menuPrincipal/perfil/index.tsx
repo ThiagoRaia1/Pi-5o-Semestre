@@ -8,14 +8,17 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import MenuInferior from "../../components/MenuInferior";
 import BotaoLogout from "../../components/BotaoLogout";
 import { IAluno, useAuth } from "../../../context/auth";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Carregando from "../../components/Carregando";
 import { atualizarUsuario } from "../../../services/apiEditarUsuario";
 import { autenticarLogin } from "../../../context/api";
+import * as Animatable from "react-native-animatable";
+import * as ImagePicker from "expo-image-picker";
 
 export default function Perfil() {
   const { usuario, setUsuario } = useAuth();
@@ -26,7 +29,10 @@ export default function Perfil() {
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [celular, setCelular] = useState("");
+  const [imagem, setImagem] = useState("");
   const [mostrarErro, setMostrarErro] = useState(false);
+  const [mostrarConteudo, setMostrarConteudo] = useState(true);
+  const animRef = useRef<Animatable.View>(null);
 
   const [erros, setErros] = useState<{
     email?: string;
@@ -45,38 +51,43 @@ export default function Perfil() {
       celular?: string;
     } = {};
 
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const celularRegex = /^\(\d{2}\)\d{5}-\d{4}$/;
+
     if (!email.trim()) {
       novosErros.email = "Email é obrigatório.";
-    } else {
-      // [a-zA-Z0-9._%+-]+ – Parte do usuário - Letras, números, ponto ., underline _, porcentagem %, mais +, hífen -
-      // + → Um ou mais desses caracteres
-
-      // @ – O caractere @
-
-      // [a-zA-Z0-9.-]+ – Parte do domínio:
-      // Letras, números, ponto ., hífen -
-      // + → Um ou mais desses caracteres
-
-      // \. – Ponto separando domínio e TLD
-
-      // [a-zA-Z]{2,} – O domínio de topo (TLD, tipo .com, .br, .org etc.):
-      // Apenas letras e pelo menos dois caracteres
-
-      // $ – Fim da string
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      if (!emailRegex.test(email)) novosErros.email = "Email inválido.";
+    } else if (!emailRegex.test(email)) {
+      novosErros.email = "Email inválido.";
     }
-    if (!senhaAtual.trim()) novosErros.senhaAtual = "A senha atual é obrigatória para atualização dos dados.";
+
+    if (!senhaAtual.trim()) {
+      novosErros.senhaAtual =
+        "A senha atual é obrigatória para atualização dos dados.";
+    }
+
     if (!celular.trim()) {
       novosErros.celular = "Celular é obrigatório.";
-    } else {
-      const celularRegex = /^\(\d{2}\)\d{5}-\d{4}$/;
-      if (!celularRegex.test(celular))
-        novosErros.celular = "Formato inválido\n(99)99999-9999.";
+    } else if (!celularRegex.test(celular)) {
+      novosErros.celular = "Formato inválido\n(99)99999-9999.";
     }
 
     setErros(novosErros);
     return Object.keys(novosErros).length === 0;
+  };
+
+  const selecionarImagem = async () => {
+    const resultado = await ImagePicker.launchImageLibraryAsync({
+      base64: true,
+      quality: 0.3, // Reduz a qualidade da imagem
+      allowsEditing: true,
+      aspect: [1, 1], // Opcional: força proporção quadrada
+    });
+
+    if (!resultado.canceled) {
+      const base64 = resultado.assets[0].base64;
+      const imagemBase64 = `data:image/jpeg;base64,${base64}`;
+      setImagem(imagemBase64);
+    }
   };
 
   const editar = async () => {
@@ -90,6 +101,7 @@ export default function Perfil() {
         login: email,
         senha,
         celular,
+        imagem,
       };
       await atualizarUsuario(backupUsuario.login, novosDados);
       setUsuario(await autenticarLogin(usuario.login, senha));
@@ -115,152 +127,225 @@ export default function Perfil() {
           showsVerticalScrollIndicator={false}
         >
           <BotaoLogout />
+          <Animatable.View
+            ref={animRef}
+            animation="fadeInUp"
+            duration={1000}
+            style={{ gap: 20 }}
+          >
+            {mostrarConteudo &&
+              (!editando ? (
+                <>
+                  <Image
+                    source={{ uri: usuario.imagem }}
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 1000,
+                      alignSelf: "center",
+                      width: 125,
+                      height: 125,
+                    }}
+                    resizeMode="contain"
+                  />
+                  <View style={styles.profileInfo}>
+                    {/* <Text style={styles.avatar}>👤</Text> */}
 
-          {!editando ? (
-            <>
-              <View style={styles.profileInfo}>
-                <Text style={styles.avatar}>👤</Text>
-                <Text style={styles.profileName}>{usuario.nome}</Text>
-              </View>
+                    <Text style={styles.profileName}>{usuario.nome}</Text>
+                  </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>CPF</Text>
-                <Text style={styles.inputText}>{usuario.cpf}</Text>
-              </View>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Sexo</Text>
-                <Text style={styles.inputText}>{usuario.sexo}</Text>
-              </View>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Data de nascimento</Text>
-                <Text style={styles.inputText}>{dataExibida}</Text>
-              </View>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email</Text>
-                <Text style={styles.inputText}>{usuario.login}</Text>
-              </View>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Celular</Text>
-                <Text style={styles.inputText}>{usuario.celular}</Text>
-              </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>CPF</Text>
+                    <Text style={styles.inputText}>{usuario.cpf}</Text>
+                  </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Sexo</Text>
+                    <Text style={styles.inputText}>{usuario.sexo}</Text>
+                  </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Data de nascimento</Text>
+                    <Text style={styles.inputText}>{dataExibida}</Text>
+                  </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Email</Text>
+                    <Text style={styles.inputText}>{usuario.login}</Text>
+                  </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Celular</Text>
+                    <Text style={styles.inputText}>{usuario.celular}</Text>
+                  </View>
 
-              <TouchableOpacity
-                style={styles.editButton}
-                onPress={() => {
-                  setEmail(usuario.login);
-                  setCelular(usuario.celular);
-                  setEditando(true);
-                }}
-              >
-                <Text style={styles.buttonText}>Editar perfil</Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email</Text>
-                <TextInput
-                  style={[
-                    styles.inputField,
-                    { backgroundColor: "white" },
-                    erros.email && { borderColor: "red", borderWidth: 1 },
-                  ]}
-                  placeholder={backupUsuario.login}
-                  placeholderTextColor={"#aaa"}
-                  defaultValue={usuario.login}
-                  onChangeText={(text) => {
-                    setEmail(text);
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => {
+                      setMostrarConteudo(false);
+                      setEmail(usuario.login);
+                      setCelular(usuario.celular);
+                      setImagem(usuario.imagem)
+                      setEditando(true);
+                      setTimeout(() => {
+                        setMostrarConteudo(true);
+                        animRef.current?.fadeInUp(1000);
+                      }, 10);
+                    }}
+                  >
+                    <Text style={styles.buttonText}>Editar perfil</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-evenly",
+                    }}
+                  >
+                    <Image
+                      source={{ uri: imagem }}
+                      style={styles.imageWhileEdit}
+                      resizeMode="contain"
+                    />
 
-                    setErros((prev) => ({ ...prev, email: undefined }));
-                  }}
-                  keyboardType="email-address"
-                />
-                {erros.email && (
-                  <Text style={styles.errorText}>{erros.email}</Text>
-                )}
-              </View>
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 10,
+                        width: "50%",
+                      }}
+                    >
+                      <Text style={{ fontSize: 18 }}>Trocar foto</Text>
+                      <TouchableOpacity
+                        onPress={selecionarImagem}
+                        style={styles.trocarFotoButtons}
+                      >
+                        <Text style={{ color: "white" }}>
+                          Selecionar da galeria
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.trocarFotoButtons}>
+                        <Text style={{ color: "white" }}>Abrir câmera</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Senha atual*</Text>
-                <TextInput
-                  style={[
-                    styles.inputField,
-                    { backgroundColor: "white" },
-                    erros.senhaAtual && { borderColor: "red", borderWidth: 1 },
-                  ]}
-                  placeholder="Insira sua senha atual"
-                  placeholderTextColor={"#aaa"}
-                  secureTextEntry
-                  onChangeText={(text) => {
-                    setSenhaAtual(text);
-                    setErros((prev) => ({ ...prev, senhaAtual: undefined }));
-                  }}
-                />
-                {erros.senhaAtual && (
-                  <Text style={styles.errorText}>{erros.senhaAtual}</Text>
-                )}
-              </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput
+                      style={[
+                        styles.inputField,
+                        { backgroundColor: "white" },
+                        erros.email && { borderColor: "red", borderWidth: 1 },
+                      ]}
+                      placeholder={backupUsuario.login}
+                      placeholderTextColor={"#aaa"}
+                      defaultValue={usuario.login}
+                      onChangeText={(text) => {
+                        setEmail(text);
+                        setErros((prev) => ({ ...prev, email: undefined }));
+                      }}
+                      keyboardType="email-address"
+                    />
+                    {erros.email && (
+                      <Text style={styles.errorText}>{erros.email}</Text>
+                    )}
+                  </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Nova senha</Text>
-                <TextInput
-                  style={styles.inputField}
-                  placeholder="Deixe em branco para manter a senha"
-                  placeholderTextColor={"#aaa"}
-                  secureTextEntry
-                  onChangeText={setNovaSenha}
-                />
-              </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Senha atual*</Text>
+                    <TextInput
+                      style={[
+                        styles.inputField,
+                        { backgroundColor: "white" },
+                        erros.senhaAtual && {
+                          borderColor: "red",
+                          borderWidth: 1,
+                        },
+                      ]}
+                      placeholder="Insira sua senha atual"
+                      placeholderTextColor={"#aaa"}
+                      secureTextEntry
+                      onChangeText={(text) => {
+                        setSenhaAtual(text);
+                        setErros((prev) => ({
+                          ...prev,
+                          senhaAtual: undefined,
+                        }));
+                      }}
+                    />
+                    {erros.senhaAtual && (
+                      <Text style={styles.errorText}>{erros.senhaAtual}</Text>
+                    )}
+                  </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Celular</Text>
-                <TextInput
-                  style={[
-                    styles.inputText,
-                    { backgroundColor: "white" },
-                    erros.celular && { borderColor: "red", borderWidth: 1 },
-                  ]}
-                  placeholder={backupUsuario.celular}
-                  placeholderTextColor={"#aaa"}
-                  defaultValue={usuario.celular}
-                  keyboardType="phone-pad"
-                  onChangeText={(text) => {
-                    setCelular(text);
-                    setErros((prev) => ({ ...prev, celular: undefined }));
-                  }}
-                />
-                {erros.celular && (
-                  <Text style={styles.errorText}>{erros.celular}</Text>
-                )}
-              </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Nova senha</Text>
+                    <TextInput
+                      style={styles.inputField}
+                      placeholder="Deixe em branco para manter a senha"
+                      placeholderTextColor={"#aaa"}
+                      secureTextEntry
+                      onChangeText={setNovaSenha}
+                    />
+                  </View>
 
-              {mostrarErro && (
-                <Text style={styles.errorText}>
-                  ❌ Senha incorreta, dados não alterados
-                </Text>
-              )}
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Celular</Text>
+                    <TextInput
+                      style={[
+                        styles.inputText,
+                        { backgroundColor: "white" },
+                        erros.celular && { borderColor: "red", borderWidth: 1 },
+                      ]}
+                      placeholder={backupUsuario.celular}
+                      placeholderTextColor={"#aaa"}
+                      defaultValue={usuario.celular}
+                      keyboardType="phone-pad"
+                      onChangeText={(text) => {
+                        setCelular(text);
+                        setErros((prev) => ({ ...prev, celular: undefined }));
+                      }}
+                    />
+                    {erros.celular && (
+                      <Text style={styles.errorText}>{erros.celular}</Text>
+                    )}
+                  </View>
 
-              <View style={{ gap: 10 }}>
-                <TouchableOpacity style={styles.saveButton} onPress={editar}>
-                  <Text style={styles.buttonText}>Salvar alterações</Text>
-                </TouchableOpacity>
+                  {mostrarErro && (
+                    <Text style={styles.errorText}>
+                      ❌ Senha incorreta, dados não alterados
+                    </Text>
+                  )}
 
-                <TouchableOpacity
-                  style={[styles.cancelButton]}
-                  onPress={() => {
-                    setUsuario(backupUsuario);
-                    setEditando(false);
-                    setMostrarErro(false);
-                  }}
-                >
-                  <Text style={styles.buttonText}>Cancelar</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
+                  <View style={{ gap: 10 }}>
+                    <TouchableOpacity
+                      style={styles.saveButton}
+                      onPress={editar}
+                    >
+                      <Text style={styles.buttonText}>Salvar alterações</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.cancelButton]}
+                      onPress={() => {
+                        setUsuario(backupUsuario);
+                        setEditando(false);
+                        setMostrarErro(false);
+                        setMostrarConteudo(false);
+                        setImagem(usuario.imagem)
+                        setTimeout(() => {
+                          setMostrarConteudo(true);
+                          animRef.current?.fadeInUp(1000);
+                        }, 10);
+                      }}
+                    >
+                      <Text style={styles.buttonText}>Cancelar</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ))}
+          </Animatable.View>
         </ScrollView>
       </KeyboardAvoidingView>
-
       <MenuInferior />
       {carregando && <Carregando />}
     </SafeAreaView>
@@ -340,5 +425,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 14,
     marginBottom: 10,
+  },
+  trocarFotoButtons: {
+    padding: 10,
+    backgroundColor: "#2AA69F",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+  },
+  imageWhileEdit: {
+    borderWidth: 1,
+    borderRadius: 1000,
+    alignSelf: "center",
+    width: 125,
+    height: 125,
   },
 });
