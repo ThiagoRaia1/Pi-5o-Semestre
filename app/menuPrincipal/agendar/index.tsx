@@ -7,6 +7,7 @@ import { useAuth } from "../../../context/auth";
 import { agendarAula } from "../../../services/apiAgendar";
 import Carregando from "../../components/Carregando";
 import { Picker } from "@react-native-picker/picker";
+import { getAulasSeguintes, IAula } from "../../../services/apiAulas";
 
 LocaleConfig.locales["pt-br"] = {
   monthNames: [
@@ -75,6 +76,9 @@ export default function SchedulingScreen() {
     "17:00",
   ];
 
+  const [horariosDisponiveis, setHorariosDisponiveis] =
+    useState<string[]>(times);
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.mainContent}>
@@ -90,14 +94,50 @@ export default function SchedulingScreen() {
         {/* Calendário */}
         <View style={{ paddingHorizontal: 20 }}>
           <Calendar
-            onDayPress={(day) => {
+            onDayPress={async (day) => {
               const selected = day.dateString;
-
               if (new Date(selected) < new Date()) {
                 alert("Agendamentos devem ser feitos um dia antes da data.");
                 setSelectedDate("");
               } else {
+                setMostrarErro(false)
                 setSelectedDate(selected);
+                setCarregando(true)
+                try {
+                  const aulasSeguintes: IAula[] = await getAulasSeguintes(
+                    usuario.login
+                  );
+
+                  const aulasDoDiaSelecionado = aulasSeguintes.filter(
+                    (aula) => {
+                      const dataAula = new Date(aula.data)
+                        .toISOString()
+                        .split("T")[0];
+                      return dataAula === selected;
+                    }
+                  );
+
+                  // Pegar os horários ocupados em formato "HH:MM"
+                  const horariosOcupados = aulasDoDiaSelecionado.map((aula) => {
+                    const data = new Date(aula.data);
+                    return data.toTimeString().slice(0, 5); // ex: "14:00"
+                  });
+
+                  // Filtrar os horários disponíveis
+                  const horariosLivres = times.filter(
+                    (time) => !horariosOcupados.includes(time)
+                  );
+                  setHorariosDisponiveis(horariosLivres);
+
+                  console.log(
+                    "Aulas do dia selecionado:",
+                    aulasDoDiaSelecionado
+                  );
+                } catch (erro: any) {
+                  console.log(erro.message);
+                } finally {
+                  setCarregando(false)
+                }
               }
             }}
             markedDates={{
@@ -129,7 +169,7 @@ export default function SchedulingScreen() {
             enabled={!!selectedDate} // habilita só se selectedDate existir
           >
             <Picker.Item label="Selecione um horário" value="" />
-            {times.map((time) => (
+            {horariosDisponiveis.map((time) => (
               <Picker.Item key={time} label={time} value={time} />
             ))}
           </Picker>

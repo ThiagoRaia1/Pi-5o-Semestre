@@ -34,6 +34,8 @@ export default function Perfil() {
   const [mostrarConteudo, setMostrarConteudo] = useState(true);
   const animRef = useRef<Animatable.View>(null);
 
+  const userIconSize = 125;
+
   const [erros, setErros] = useState<{
     email?: string;
     senhaAtual?: string;
@@ -166,10 +168,10 @@ export default function Perfil() {
                       borderWidth: 1,
                       borderRadius: 1000,
                       alignSelf: "center",
-                      width: 125,
-                      height: 125,
+                      width: userIconSize,
+                      height: userIconSize,
                     }}
-                    resizeMode="contain"
+                    resizeMode="center"
                   />
                   <View style={styles.profileInfo}>
                     {/* <Text style={styles.avatar}>👤</Text> */}
@@ -226,7 +228,7 @@ export default function Perfil() {
                     <Image
                       source={{ uri: imagem }}
                       style={styles.imageWhileEdit}
-                      resizeMode="contain"
+                      resizeMode="center"
                     />
 
                     <View
