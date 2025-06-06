@@ -90,6 +90,29 @@ export default function Perfil() {
     }
   };
 
+  const abrirCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (status !== "granted") {
+      alert("Permissão para usar a câmera foi negada.");
+      return;
+    }
+
+    const resultado = await ImagePicker.launchCameraAsync({
+      base64: true,
+      quality: 0.3,
+      allowsEditing: true,
+      aspect: [1, 1],
+      mediaTypes: ['images'],
+    });
+
+    if (!resultado.canceled) {
+      const base64 = resultado.assets[0].base64;
+      const imagemBase64 = `data:image/jpeg;base64,${base64}`;
+      setImagem(imagemBase64);
+    }
+  };
+
   const editar = async () => {
     if (!validarCampos()) return;
     setCarregando(true);
@@ -104,8 +127,9 @@ export default function Perfil() {
         imagem,
       };
       await atualizarUsuario(backupUsuario.login, novosDados);
-      setUsuario(await autenticarLogin(usuario.login, senha));
-      setBackupUsuario(usuario);
+      const usuarioAtualizado = await autenticarLogin(usuario.login, senha);
+      setUsuario(usuarioAtualizado);
+      setBackupUsuario(usuarioAtualizado);
       setMostrarErro(false);
       alert("Dados atualizados com sucesso!");
       setEditando(false);
@@ -180,7 +204,7 @@ export default function Perfil() {
                       setMostrarConteudo(false);
                       setEmail(usuario.login);
                       setCelular(usuario.celular);
-                      setImagem(usuario.imagem)
+                      setImagem(usuario.imagem);
                       setEditando(true);
                       setTimeout(() => {
                         setMostrarConteudo(true);
@@ -222,7 +246,11 @@ export default function Perfil() {
                           Selecionar da galeria
                         </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.trocarFotoButtons}>
+                      
+                      <TouchableOpacity
+                        onPress={abrirCamera}
+                        style={styles.trocarFotoButtons}
+                      >
                         <Text style={{ color: "white" }}>Abrir câmera</Text>
                       </TouchableOpacity>
                     </View>
@@ -331,7 +359,7 @@ export default function Perfil() {
                         setEditando(false);
                         setMostrarErro(false);
                         setMostrarConteudo(false);
-                        setImagem(usuario.imagem)
+                        setImagem(usuario.imagem);
                         setTimeout(() => {
                           setMostrarConteudo(true);
                           animRef.current?.fadeInUp(1000);
