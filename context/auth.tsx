@@ -1,6 +1,6 @@
+// context/auth.tsx
 import React, { createContext, useContext, useState } from "react";
-import { router } from "expo-router";
-import { autenticarLogin } from "./api";
+import AuthService from "../services/AuthService";
 
 export interface IAluno {
   login: string;
@@ -10,7 +10,7 @@ export interface IAluno {
   celular: string;
   dataNascimento: Date;
   senha: string;
-  imagem: string
+  imagem: string;
 }
 
 interface IAuthContext {
@@ -39,9 +39,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   async function handleLogin(senha: string) {
     try {
-      const aluno = await autenticarLogin(usuario.login, senha);
+      const aluno = await AuthService.login(usuario.login, senha);
       setUsuario(aluno);
-      router.push("/menuPrincipal/inicio");
     } catch (erro: any) {
       const mensagem = erro.message || "";
 

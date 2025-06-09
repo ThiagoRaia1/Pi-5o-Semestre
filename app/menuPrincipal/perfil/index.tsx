@@ -22,7 +22,7 @@ import Carregando from "../../components/Carregando";
 
 const userIconSize = 125;
 const imageMode = "cover";
-
+import { ValidacaoAlunoStrategy } from "../../../strategies/ValidacaoAlunoStrategy";
 export default function Perfil() {
   const { usuario, setUsuario } = useAuth();
   const [backupUsuario, setBackupUsuario] = useState(usuario);
@@ -47,36 +47,15 @@ export default function Perfil() {
   const [ano, mes, dia] = data.toISOString().split("T")[0].split("-");
   const dataExibida = `${dia}/${mes}/${ano}`;
 
-  const validarCampos = () => {
-    const novosErros: {
-      email?: string;
-      senhaAtual?: string;
-      celular?: string;
-    } = {};
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const celularRegex = /^\(\d{2}\)\d{5}-\d{4}$/;
+const strategy = new ValidacaoAlunoStrategy();
 
-    if (!email.trim()) {
-      novosErros.email = "Email é obrigatório.";
-    } else if (!emailRegex.test(email)) {
-      novosErros.email = "Email inválido.";
-    }
+const validarCampos = () => {
+  const novosErros = strategy.validar(email, senhaAtual, celular);
+  setErros(novosErros);
+  return Object.keys(novosErros).length === 0;
+};
 
-    if (!senhaAtual.trim()) {
-      novosErros.senhaAtual =
-        "A senha atual é obrigatória para atualização dos dados.";
-    }
-
-    if (!celular.trim()) {
-      novosErros.celular = "Celular é obrigatório.";
-    } else if (!celularRegex.test(celular)) {
-      novosErros.celular = "Formato inválido\n(99)99999-9999.";
-    }
-
-    setErros(novosErros);
-    return Object.keys(novosErros).length === 0;
-  };
 
   const selecionarImagem = async () => {
     const resultado = await ImagePicker.launchImageLibraryAsync({
