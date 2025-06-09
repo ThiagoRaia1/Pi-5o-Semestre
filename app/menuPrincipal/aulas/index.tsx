@@ -6,9 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import MenuInferior from "../../components/MenuInferior";
-import BotaoLogout from "../../components/BotaoLogout";
-import Carregando from "../../components/Carregando";
+import * as Animatable from "react-native-animatable";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/auth";
 import {
@@ -16,7 +14,9 @@ import {
   getAulasSeguintes,
   IAula,
 } from "../../../services/apiAulas";
-import * as Animatable from "react-native-animatable";
+import MenuInferior from "../../components/MenuInferior";
+import BotaoLogout from "../../components/BotaoLogout";
+import Carregando from "../../components/Carregando";
 
 function renderAula(aula: IAula, onCancelar: (aula: IAula) => void) {
   const dataAula = new Date(aula.data);
@@ -26,11 +26,11 @@ function renderAula(aula: IAula, onCancelar: (aula: IAula) => void) {
       <View style={styles.dateContent}>
         <Text style={styles.dateText}>
           {dataAula.toLocaleDateString() +
-            ", " +
+            `,\n` +
             dataAula.toLocaleDateString("pt-BR", {
               weekday: "long",
             }) +
-            `, ${"\n"}` +
+            `,\n` +
             dataAula.toLocaleTimeString("pt-BR", {
               hour: "2-digit",
               minute: "2-digit",
@@ -123,9 +123,6 @@ export default function Aulas() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   mainContent: {
     flex: 7,
     backgroundColor: "#f2f2f0aa", // transparente para ver o fundo

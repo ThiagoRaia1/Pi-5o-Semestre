@@ -1,10 +1,10 @@
+import { useState, useEffect } from "react";
 import { View, Image, StyleSheet, Text } from "react-native";
+import * as Animatable from "react-native-animatable";
+import { useAuth } from "../../../context/auth";
+import { getAulasSeguintes, IAula } from "../../../services/apiAulas";
 import MenuInferior from "../../components/MenuInferior";
 import BotaoLogout from "../../components/BotaoLogout";
-import { useAuth } from "../../../context/auth";
-import { useState, useEffect } from "react";
-import { getAulasSeguintes, IAula } from "../../../services/apiAulas";
-import * as Animatable from "react-native-animatable";
 
 export default function Inicio() {
   const { usuario } = useAuth();
@@ -49,7 +49,7 @@ export default function Inicio() {
   }, [usuario.login]);
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <View style={styles.content}>
         <BotaoLogout />
         <Image
@@ -105,9 +105,6 @@ export default function Inicio() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   content: {
     flex: 1,
     justifyContent: "flex-end",

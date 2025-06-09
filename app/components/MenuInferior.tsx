@@ -1,4 +1,5 @@
 import { Link, usePathname } from "expo-router";
+import { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -10,27 +11,28 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { nomePaginas } from "../../utils/nomePaginas";
-import { useEffect, useRef } from "react";
+
+const menuPrincipal = "/menuPrincipal"
 
 type FeatherIconName = keyof typeof Feather.glyphMap;
 const menuItems: { href: string; icon: FeatherIconName; label: string }[] = [
   {
-    href: `/menuPrincipal/${nomePaginas.inicio}`,
+    href: `${menuPrincipal}/${nomePaginas.inicio}`,
     icon: "home",
     label: "INÍCIO",
   },
   {
-    href: `/menuPrincipal/${nomePaginas.aulas}`,
+    href: `${menuPrincipal}/${nomePaginas.aulas}`,
     icon: "clock",
     label: "AULAS",
   },
   {
-    href: `/menuPrincipal/${nomePaginas.agendar}`,
+    href: `${menuPrincipal}/${nomePaginas.agendar}`,
     icon: "calendar",
     label: "AGENDAR",
   },
   {
-    href: `/menuPrincipal/${nomePaginas.perfil}`,
+    href: `${menuPrincipal}/${nomePaginas.perfil}`,
     icon: "user",
     label: "PERFIL",
   },

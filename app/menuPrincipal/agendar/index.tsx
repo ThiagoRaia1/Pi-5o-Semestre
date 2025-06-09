@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
-import MenuInferior from "../../components/MenuInferior";
-import BotaoLogout from "../../components/BotaoLogout";
+import { Picker } from "@react-native-picker/picker";
 import { useAuth } from "../../../context/auth";
 import { agendarAula } from "../../../services/apiAgendar";
-import Carregando from "../../components/Carregando";
-import { Picker } from "@react-native-picker/picker";
 import { getAulasSeguintes, IAula } from "../../../services/apiAulas";
+import MenuInferior from "../../components/MenuInferior";
+import BotaoLogout from "../../components/BotaoLogout";
+import Carregando from "../../components/Carregando";
 
 LocaleConfig.locales["pt-br"] = {
   monthNames: [
@@ -100,9 +100,9 @@ export default function SchedulingScreen() {
                 alert("Agendamentos devem ser feitos um dia antes da data.");
                 setSelectedDate("");
               } else {
-                setMostrarErro(false)
+                setMostrarErro(false);
                 setSelectedDate(selected);
-                setCarregando(true)
+                setCarregando(true);
                 try {
                   const aulasSeguintes: IAula[] = await getAulasSeguintes(
                     usuario.login
@@ -136,7 +136,7 @@ export default function SchedulingScreen() {
                 } catch (erro: any) {
                   console.log(erro.message);
                 } finally {
-                  setCarregando(false)
+                  setCarregando(false);
                 }
               }
             }}
@@ -217,10 +217,9 @@ export default function SchedulingScreen() {
 const styles = StyleSheet.create({
   mainContent: {
     justifyContent: "center",
-    flex: 7,
+    flex: 1,
   },
   backgroundImage: {
-    flex: 8,
     position: "absolute",
     width: "100%",
     height: "100%",

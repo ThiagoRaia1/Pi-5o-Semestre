@@ -29,7 +29,7 @@ export default function TelaLogin() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <Image
         source={require("../assets/fundoLogin.jpeg")}
         style={styles.backgroundImage}
@@ -39,7 +39,7 @@ export default function TelaLogin() {
         <View style={styles.inputContainer}>
           <Feather name="mail" size={20} color="black" style={styles.icon} />
           <TextInput
-            style={[styles.input, {outline: "none"} as any]}
+            style={[styles.input, { outline: "none" } as any]}
             placeholder="Email"
             placeholderTextColor="#ccc"
             onChangeText={(text) => setUsuario({ ...usuario, login: text })}
@@ -50,7 +50,7 @@ export default function TelaLogin() {
         <View style={styles.inputContainer}>
           <Feather name="lock" size={20} color="black" style={styles.icon} />
           <TextInput
-            style={[styles.input, {outline: "none"} as any]}
+            style={[styles.input, { outline: "none" } as any]}
             placeholder="Senha"
             placeholderTextColor="#ccc"
             secureTextEntry={!mostrarSenha}
@@ -76,9 +76,6 @@ export default function TelaLogin() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   backgroundImage: {
     position: "absolute",
     width: "100%",

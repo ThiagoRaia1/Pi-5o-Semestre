@@ -10,15 +10,18 @@ import {
   Platform,
   Image,
 } from "react-native";
-import MenuInferior from "../../components/MenuInferior";
-import BotaoLogout from "../../components/BotaoLogout";
-import { IAluno, useAuth } from "../../../context/auth";
 import { useState, useRef } from "react";
-import Carregando from "../../components/Carregando";
-import { atualizarUsuario } from "../../../services/apiEditarUsuario";
-import { autenticarLogin } from "../../../context/api";
 import * as Animatable from "react-native-animatable";
 import * as ImagePicker from "expo-image-picker";
+import { IAluno, useAuth } from "../../../context/auth";
+import { autenticarLogin } from "../../../context/api";
+import { atualizarUsuario } from "../../../services/apiEditarUsuario";
+import MenuInferior from "../../components/MenuInferior";
+import BotaoLogout from "../../components/BotaoLogout";
+import Carregando from "../../components/Carregando";
+
+const userIconSize = 125;
+const imageMode = "cover";
 
 export default function Perfil() {
   const { usuario, setUsuario } = useAuth();
@@ -29,12 +32,10 @@ export default function Perfil() {
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [celular, setCelular] = useState("");
-  const [imagem, setImagem] = useState("");
+  const [imagem, setImagem] = useState(usuario.imagem);
   const [mostrarErro, setMostrarErro] = useState(false);
   const [mostrarConteudo, setMostrarConteudo] = useState(true);
   const animRef = useRef<Animatable.View>(null);
-
-  const userIconSize = 125;
 
   const [erros, setErros] = useState<{
     email?: string;
@@ -105,7 +106,7 @@ export default function Perfil() {
       quality: 0.3,
       allowsEditing: true,
       aspect: [1, 1],
-      mediaTypes: ['images'],
+      mediaTypes: ["images"],
     });
 
     if (!resultado.canceled) {
@@ -116,29 +117,41 @@ export default function Perfil() {
   };
 
   const editar = async () => {
-    if (!validarCampos()) return;
-    setCarregando(true);
-    try {
-      await autenticarLogin(usuario.login, senhaAtual);
-      let senha = novaSenha !== "" ? novaSenha : senhaAtual;
-      const novosDados: IAluno = {
-        ...usuario,
-        login: email,
-        senha,
-        celular,
-        imagem,
-      };
-      await atualizarUsuario(backupUsuario.login, novosDados);
-      const usuarioAtualizado = await autenticarLogin(usuario.login, senha);
-      setUsuario(usuarioAtualizado);
-      setBackupUsuario(usuarioAtualizado);
-      setMostrarErro(false);
-      alert("Dados atualizados com sucesso!");
-      setEditando(false);
-    } catch (erro: any) {
-      if (erro.message === "Erro ao autenticar aluno") setMostrarErro(true);
-    } finally {
-      setCarregando(false);
+    if (!editando) {
+      setMostrarConteudo(false);
+      setEmail(usuario.login);
+      setCelular(usuario.celular);
+      setImagem(usuario.imagem);
+      setEditando(true);
+      setTimeout(() => {
+        setMostrarConteudo(true);
+        animRef.current?.fadeInUp(1000);
+      }, 10);
+    } else {
+      if (!validarCampos()) return;
+      setCarregando(true);
+      try {
+        await autenticarLogin(usuario.login, senhaAtual);
+        let senha = novaSenha !== "" ? novaSenha : senhaAtual;
+        const novosDados: IAluno = {
+          ...usuario,
+          login: email,
+          senha,
+          celular,
+          imagem,
+        };
+        await atualizarUsuario(backupUsuario.login, novosDados);
+        const usuarioAtualizado = await autenticarLogin(usuario.login, senha);
+        setUsuario(usuarioAtualizado);
+        setBackupUsuario(usuarioAtualizado);
+        setMostrarErro(false);
+        alert("Dados atualizados com sucesso!");
+        setEditando(false);
+      } catch (erro: any) {
+        if (erro.message === "Erro ao autenticar aluno") setMostrarErro(true);
+      } finally {
+        setCarregando(false);
+      }
     }
   };
 
@@ -163,19 +176,15 @@ export default function Perfil() {
               (!editando ? (
                 <>
                   <Image
-                    source={{ uri: usuario.imagem }}
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 1000,
-                      alignSelf: "center",
-                      width: userIconSize,
-                      height: userIconSize,
-                    }}
-                    resizeMode="center"
+                    source={
+                      usuario.imagem !== ""
+                        ? { uri: usuario.imagem }
+                        : require("../../../assets/userIcon.png")
+                    }
+                    style={styles.userIcon}
+                    resizeMode={imageMode}
                   />
                   <View style={styles.profileInfo}>
-                    {/* <Text style={styles.avatar}>👤</Text> */}
-
                     <Text style={styles.profileName}>{usuario.nome}</Text>
                   </View>
 
@@ -202,17 +211,7 @@ export default function Perfil() {
 
                   <TouchableOpacity
                     style={styles.editButton}
-                    onPress={() => {
-                      setMostrarConteudo(false);
-                      setEmail(usuario.login);
-                      setCelular(usuario.celular);
-                      setImagem(usuario.imagem);
-                      setEditando(true);
-                      setTimeout(() => {
-                        setMostrarConteudo(true);
-                        animRef.current?.fadeInUp(1000);
-                      }, 10);
-                    }}
+                    onPress={editar}
                   >
                     <Text style={styles.buttonText}>Editar perfil</Text>
                   </TouchableOpacity>
@@ -223,12 +222,17 @@ export default function Perfil() {
                     style={{
                       flexDirection: "row",
                       justifyContent: "space-evenly",
+                      gap: 20,
                     }}
                   >
                     <Image
-                      source={{ uri: imagem }}
+                      source={
+                        imagem !== ""
+                          ? { uri: imagem }
+                          : require("../../../assets/userIcon.png")
+                      }
                       style={styles.imageWhileEdit}
-                      resizeMode="center"
+                      resizeMode={imageMode}
                     />
 
                     <View
@@ -236,7 +240,7 @@ export default function Perfil() {
                         justifyContent: "center",
                         alignItems: "center",
                         gap: 10,
-                        width: "50%",
+                        flex: 1
                       }}
                     >
                       <Text style={{ fontSize: 18 }}>Trocar foto</Text>
@@ -248,18 +252,25 @@ export default function Perfil() {
                           Selecionar da galeria
                         </Text>
                       </TouchableOpacity>
-                      
+
                       <TouchableOpacity
                         onPress={abrirCamera}
                         style={styles.trocarFotoButtons}
                       >
                         <Text style={{ color: "white" }}>Abrir câmera</Text>
                       </TouchableOpacity>
+
+                      <TouchableOpacity
+                        onPress={() => setImagem("")}
+                        style={styles.trocarFotoButtons}
+                      >
+                        <Text style={{ color: "white" }}>Remover foto</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
 
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Email</Text>
+                    <Text style={styles.label}>Email*</Text>
                     <TextInput
                       style={[
                         styles.inputField,
@@ -319,7 +330,7 @@ export default function Perfil() {
                   </View>
 
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Celular</Text>
+                    <Text style={styles.label}>Celular*</Text>
                     <TextInput
                       style={[
                         styles.inputText,
@@ -393,8 +404,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  avatar: {
-    fontSize: 64,
+  userIcon: {
+    borderWidth: 1,
+    borderRadius: 1000,
+    alignSelf: "center",
+    width: userIconSize,
+    height: userIconSize,
   },
   profileName: {
     fontSize: 24,
