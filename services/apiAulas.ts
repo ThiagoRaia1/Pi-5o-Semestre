@@ -20,8 +20,8 @@ export async function getAulasSeguintes(login: string) {
       throw new Error(erro.message || "Erro ao carregar aulas");
     }
 
-    const usuarioAtualizado = await resposta.json();
-    return usuarioAtualizado;
+    const getAulasSeguintes = await resposta.json();
+    return getAulasSeguintes;
   } catch (erro: any) {
     console.error("Erro ao carregar aulas:", erro.message);
     throw erro;
