@@ -29,49 +29,51 @@ export default function TelaLogin() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Image
-        source={require("../assets/fundoLogin.jpeg")}
-        style={styles.backgroundImage}
-        resizeMode="stretch"
-      />
-      <View style={styles.content}>
-        <View style={styles.inputContainer}>
-          <Feather name="mail" size={20} color="black" style={styles.icon} />
-          <TextInput
-            style={[styles.input, { outline: "none" } as any]}
-            placeholder="Email"
-            placeholderTextColor="#ccc"
-            onChangeText={(text) => setUsuario({ ...usuario, login: text })}
-            onSubmitEditing={login}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Feather name="lock" size={20} color="black" style={styles.icon} />
-          <TextInput
-            style={[styles.input, { outline: "none" } as any]}
-            placeholder="Senha"
-            placeholderTextColor="#ccc"
-            secureTextEntry={!mostrarSenha}
-            onChangeText={(text) => setSenha(text)}
-            onSubmitEditing={login}
-          />
-          <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
-            <Feather
-              name={mostrarSenha ? "eye-off" : "eye"}
-              size={20}
-              color="black"
+    <>
+      <View style={{ flex: 1 }}>
+        <Image
+          source={require("../assets/fundoLogin.jpeg")}
+          style={styles.backgroundImage}
+          resizeMode="stretch"
+        />
+        <View style={styles.content}>
+          <View style={styles.inputContainer}>
+            <Feather name="mail" size={20} color="black" style={styles.icon} />
+            <TextInput
+              style={[styles.input, { outline: "none" } as any]}
+              placeholder="Email"
+              placeholderTextColor="#ccc"
+              onChangeText={(text) => setUsuario({ ...usuario, login: text })}
+              onSubmitEditing={login}
             />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Feather name="lock" size={20} color="black" style={styles.icon} />
+            <TextInput
+              style={[styles.input, { outline: "none" } as any]}
+              placeholder="Senha"
+              placeholderTextColor="#ccc"
+              secureTextEntry={!mostrarSenha}
+              onChangeText={(text) => setSenha(text)}
+              onSubmitEditing={login}
+            />
+            <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
+              <Feather
+                name={mostrarSenha ? "eye-off" : "eye"}
+                size={20}
+                color="black"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={login}>
+            <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.button} onPress={login}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
       </View>
       {carregando && <Carregando />}
-    </View>
+    </>
   );
 }
 

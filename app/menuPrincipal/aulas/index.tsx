@@ -86,39 +86,41 @@ export default function Aulas() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#aaa" }}>
-      <View style={{ flex: 1, backgroundColor: "#eee" }}>
-        <BotaoLogout />
-        <Image
-          source={require("../../../assets/fundoAgendar.png")}
-          style={styles.backgroundImage}
-          resizeMode="stretch"
-        />
-        <View style={styles.mainContent}>
-          <Text style={styles.title}>PRÓXIMAS AULAS</Text>
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            persistentScrollbar={true}
-          >
-            {aulas
-              .filter((aula: IAula) => new Date(aula.data) > new Date()) // Filtra aulas futuras
-              .map((aula: IAula, index: number) => (
-                <Animatable.View
-                  key={aula._id}
-                  animation="fadeInUp"
-                  duration={1000}
-                  delay={index * 150}
-                >
-                  <View key={aula._id}>{renderAula(aula, cancelarAula)}</View>
-                </Animatable.View>
-              ))}
-          </ScrollView>
+    <>
+      <View style={{ flex: 1, backgroundColor: "#aaa" }}>
+        <View style={{ flex: 1, backgroundColor: "#eee" }}>
+          <BotaoLogout />
+          <Image
+            source={require("../../../assets/fundoAgendar.png")}
+            style={styles.backgroundImage}
+            resizeMode="stretch"
+          />
+          <View style={styles.mainContent}>
+            <Text style={styles.title}>PRÓXIMAS AULAS</Text>
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.scrollContent}
+              persistentScrollbar={true}
+            >
+              {aulas
+                .filter((aula: IAula) => new Date(aula.data) > new Date()) // Filtra aulas futuras
+                .map((aula: IAula, index: number) => (
+                  <Animatable.View
+                    key={aula._id}
+                    animation="fadeInUp"
+                    duration={1000}
+                    delay={index * 150}
+                  >
+                    <View key={aula._id}>{renderAula(aula, cancelarAula)}</View>
+                  </Animatable.View>
+                ))}
+            </ScrollView>
+          </View>
         </View>
+        <MenuInferior />
       </View>
-      <MenuInferior />
       {carregando && <Carregando />}
-    </View>
+    </>
   );
 }
 

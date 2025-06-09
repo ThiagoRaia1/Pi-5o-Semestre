@@ -156,240 +156,245 @@ export default function Perfil() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          contentContainerStyle={styles.container}
-          showsVerticalScrollIndicator={false}
+    <>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
         >
-          <BotaoLogout />
-          <Animatable.View
-            ref={animRef}
-            animation="fadeInUp"
-            duration={1000}
-            style={{ gap: 20 }}
+          <ScrollView
+            contentContainerStyle={styles.container}
+            showsVerticalScrollIndicator={false}
           >
-            {mostrarConteudo &&
-              (!editando ? (
-                <>
-                  <Image
-                    source={
-                      usuario.imagem !== ""
-                        ? { uri: usuario.imagem }
-                        : require("../../../assets/userIcon.png")
-                    }
-                    style={styles.userIcon}
-                    resizeMode={imageMode}
-                  />
-                  <View style={styles.profileInfo}>
-                    <Text style={styles.profileName}>{usuario.nome}</Text>
-                  </View>
-
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>CPF</Text>
-                    <Text style={styles.inputText}>{usuario.cpf}</Text>
-                  </View>
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Sexo</Text>
-                    <Text style={styles.inputText}>{usuario.sexo}</Text>
-                  </View>
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Data de nascimento</Text>
-                    <Text style={styles.inputText}>{dataExibida}</Text>
-                  </View>
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Email</Text>
-                    <Text style={styles.inputText}>{usuario.login}</Text>
-                  </View>
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Celular</Text>
-                    <Text style={styles.inputText}>{usuario.celular}</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    style={styles.editButton}
-                    onPress={editar}
-                  >
-                    <Text style={styles.buttonText}>Editar perfil</Text>
-                  </TouchableOpacity>
-                </>
-              ) : (
-                <>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-evenly",
-                      gap: 20,
-                    }}
-                  >
+            <BotaoLogout />
+            <Animatable.View
+              ref={animRef}
+              animation="fadeInUp"
+              duration={1000}
+              style={{ gap: 20 }}
+            >
+              {mostrarConteudo &&
+                (!editando ? (
+                  <>
                     <Image
                       source={
-                        imagem !== ""
-                          ? { uri: imagem }
+                        usuario.imagem !== ""
+                          ? { uri: usuario.imagem }
                           : require("../../../assets/userIcon.png")
                       }
-                      style={styles.imageWhileEdit}
+                      style={styles.userIcon}
                       resizeMode={imageMode}
                     />
-
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 10,
-                        flex: 1
-                      }}
-                    >
-                      <Text style={{ fontSize: 18 }}>Trocar foto</Text>
-                      <TouchableOpacity
-                        onPress={selecionarImagem}
-                        style={styles.trocarFotoButtons}
-                      >
-                        <Text style={{ color: "white" }}>
-                          Selecionar da galeria
-                        </Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={abrirCamera}
-                        style={styles.trocarFotoButtons}
-                      >
-                        <Text style={{ color: "white" }}>Abrir câmera</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() => setImagem("")}
-                        style={styles.trocarFotoButtons}
-                      >
-                        <Text style={{ color: "white" }}>Remover foto</Text>
-                      </TouchableOpacity>
+                    <View style={styles.profileInfo}>
+                      <Text style={styles.profileName}>{usuario.nome}</Text>
                     </View>
-                  </View>
 
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Email*</Text>
-                    <TextInput
-                      style={[
-                        styles.inputField,
-                        { backgroundColor: "white" },
-                        erros.email && { borderColor: "red", borderWidth: 1 },
-                      ]}
-                      placeholder={backupUsuario.login}
-                      placeholderTextColor={"#aaa"}
-                      defaultValue={usuario.login}
-                      onChangeText={(text) => {
-                        setEmail(text);
-                        setErros((prev) => ({ ...prev, email: undefined }));
-                      }}
-                      keyboardType="email-address"
-                    />
-                    {erros.email && (
-                      <Text style={styles.errorText}>{erros.email}</Text>
-                    )}
-                  </View>
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>CPF</Text>
+                      <Text style={styles.inputText}>{usuario.cpf}</Text>
+                    </View>
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>Sexo</Text>
+                      <Text style={styles.inputText}>{usuario.sexo}</Text>
+                    </View>
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>Data de nascimento</Text>
+                      <Text style={styles.inputText}>{dataExibida}</Text>
+                    </View>
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>Email</Text>
+                      <Text style={styles.inputText}>{usuario.login}</Text>
+                    </View>
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>Celular</Text>
+                      <Text style={styles.inputText}>{usuario.celular}</Text>
+                    </View>
 
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Senha atual*</Text>
-                    <TextInput
-                      style={[
-                        styles.inputField,
-                        { backgroundColor: "white" },
-                        erros.senhaAtual && {
-                          borderColor: "red",
-                          borderWidth: 1,
-                        },
-                      ]}
-                      placeholder="Insira sua senha atual"
-                      placeholderTextColor={"#aaa"}
-                      secureTextEntry
-                      onChangeText={(text) => {
-                        setSenhaAtual(text);
-                        setErros((prev) => ({
-                          ...prev,
-                          senhaAtual: undefined,
-                        }));
-                      }}
-                    />
-                    {erros.senhaAtual && (
-                      <Text style={styles.errorText}>{erros.senhaAtual}</Text>
-                    )}
-                  </View>
-
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Nova senha</Text>
-                    <TextInput
-                      style={styles.inputField}
-                      placeholder="Deixe em branco para manter a senha"
-                      placeholderTextColor={"#aaa"}
-                      secureTextEntry
-                      onChangeText={setNovaSenha}
-                    />
-                  </View>
-
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Celular*</Text>
-                    <TextInput
-                      style={[
-                        styles.inputText,
-                        { backgroundColor: "white" },
-                        erros.celular && { borderColor: "red", borderWidth: 1 },
-                      ]}
-                      placeholder={backupUsuario.celular}
-                      placeholderTextColor={"#aaa"}
-                      defaultValue={usuario.celular}
-                      keyboardType="phone-pad"
-                      onChangeText={(text) => {
-                        setCelular(text);
-                        setErros((prev) => ({ ...prev, celular: undefined }));
-                      }}
-                    />
-                    {erros.celular && (
-                      <Text style={styles.errorText}>{erros.celular}</Text>
-                    )}
-                  </View>
-
-                  {mostrarErro && (
-                    <Text style={styles.errorText}>
-                      ❌ Senha incorreta, dados não alterados
-                    </Text>
-                  )}
-
-                  <View style={{ gap: 10 }}>
                     <TouchableOpacity
-                      style={styles.saveButton}
+                      style={styles.editButton}
                       onPress={editar}
                     >
-                      <Text style={styles.buttonText}>Salvar alterações</Text>
+                      <Text style={styles.buttonText}>Editar perfil</Text>
                     </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={[styles.cancelButton]}
-                      onPress={() => {
-                        setUsuario(backupUsuario);
-                        setEditando(false);
-                        setMostrarErro(false);
-                        setMostrarConteudo(false);
-                        setImagem(usuario.imagem);
-                        setTimeout(() => {
-                          setMostrarConteudo(true);
-                          animRef.current?.fadeInUp(1000);
-                        }, 10);
+                  </>
+                ) : (
+                  <>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                        gap: 20,
                       }}
                     >
-                      <Text style={styles.buttonText}>Cancelar</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ))}
-          </Animatable.View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-      <MenuInferior />
+                      <Image
+                        source={
+                          imagem !== ""
+                            ? { uri: imagem }
+                            : require("../../../assets/userIcon.png")
+                        }
+                        style={styles.imageWhileEdit}
+                        resizeMode={imageMode}
+                      />
+
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: 10,
+                          flex: 1,
+                        }}
+                      >
+                        <Text style={{ fontSize: 18 }}>Trocar foto</Text>
+                        <TouchableOpacity
+                          onPress={selecionarImagem}
+                          style={styles.trocarFotoButtons}
+                        >
+                          <Text style={{ color: "white" }}>
+                            Selecionar da galeria
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={abrirCamera}
+                          style={styles.trocarFotoButtons}
+                        >
+                          <Text style={{ color: "white" }}>Abrir câmera</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => setImagem("")}
+                          style={styles.trocarFotoButtons}
+                        >
+                          <Text style={{ color: "white" }}>Remover foto</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>Email*</Text>
+                      <TextInput
+                        style={[
+                          styles.inputField,
+                          { backgroundColor: "white" },
+                          erros.email && { borderColor: "red", borderWidth: 1 },
+                        ]}
+                        placeholder={backupUsuario.login}
+                        placeholderTextColor={"#aaa"}
+                        defaultValue={usuario.login}
+                        onChangeText={(text) => {
+                          setEmail(text);
+                          setErros((prev) => ({ ...prev, email: undefined }));
+                        }}
+                        keyboardType="email-address"
+                      />
+                      {erros.email && (
+                        <Text style={styles.errorText}>{erros.email}</Text>
+                      )}
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>Senha atual*</Text>
+                      <TextInput
+                        style={[
+                          styles.inputField,
+                          { backgroundColor: "white" },
+                          erros.senhaAtual && {
+                            borderColor: "red",
+                            borderWidth: 1,
+                          },
+                        ]}
+                        placeholder="Insira sua senha atual"
+                        placeholderTextColor={"#aaa"}
+                        secureTextEntry
+                        onChangeText={(text) => {
+                          setSenhaAtual(text);
+                          setErros((prev) => ({
+                            ...prev,
+                            senhaAtual: undefined,
+                          }));
+                        }}
+                      />
+                      {erros.senhaAtual && (
+                        <Text style={styles.errorText}>{erros.senhaAtual}</Text>
+                      )}
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>Nova senha</Text>
+                      <TextInput
+                        style={styles.inputField}
+                        placeholder="Deixe em branco para manter a senha"
+                        placeholderTextColor={"#aaa"}
+                        secureTextEntry
+                        onChangeText={setNovaSenha}
+                      />
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.label}>Celular*</Text>
+                      <TextInput
+                        style={[
+                          styles.inputText,
+                          { backgroundColor: "white" },
+                          erros.celular && {
+                            borderColor: "red",
+                            borderWidth: 1,
+                          },
+                        ]}
+                        placeholder={backupUsuario.celular}
+                        placeholderTextColor={"#aaa"}
+                        defaultValue={usuario.celular}
+                        keyboardType="phone-pad"
+                        onChangeText={(text) => {
+                          setCelular(text);
+                          setErros((prev) => ({ ...prev, celular: undefined }));
+                        }}
+                      />
+                      {erros.celular && (
+                        <Text style={styles.errorText}>{erros.celular}</Text>
+                      )}
+                    </View>
+
+                    {mostrarErro && (
+                      <Text style={styles.errorText}>
+                        ❌ Senha incorreta, dados não alterados
+                      </Text>
+                    )}
+
+                    <View style={{ gap: 10 }}>
+                      <TouchableOpacity
+                        style={styles.saveButton}
+                        onPress={editar}
+                      >
+                        <Text style={styles.buttonText}>Salvar alterações</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[styles.cancelButton]}
+                        onPress={() => {
+                          setUsuario(backupUsuario);
+                          setEditando(false);
+                          setMostrarErro(false);
+                          setMostrarConteudo(false);
+                          setImagem(usuario.imagem);
+                          setTimeout(() => {
+                            setMostrarConteudo(true);
+                            animRef.current?.fadeInUp(1000);
+                          }, 10);
+                        }}
+                      >
+                        <Text style={styles.buttonText}>Cancelar</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                ))}
+            </Animatable.View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+        <MenuInferior />
+      </SafeAreaView>
       {carregando && <Carregando />}
-    </SafeAreaView>
+    </>
   );
 }
 
