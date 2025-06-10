@@ -6,7 +6,7 @@ type CarregandoProps = {
 
 export default function Carregando({ borda = 0 }: CarregandoProps) {
   return (
-    <Modal transparent={true}>
+    <Modal transparent={true} statusBarTranslucent={true}>
       <View style={[styles.overlay, { borderRadius: borda }]}>
         <ActivityIndicator size="large" color="#000" />
       </View>
@@ -16,11 +16,7 @@ export default function Carregando({ borda = 0 }: CarregandoProps) {
 
 const styles = StyleSheet.create({
   overlay: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(255,255,255,0.7)",
     justifyContent: "center",
     alignItems: "center",

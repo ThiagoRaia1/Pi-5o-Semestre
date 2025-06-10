@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useState, useRef } from "react";
 import * as Animatable from "react-native-animatable";
+import MaskInput, { Masks } from "react-native-mask-input";
 import * as ImagePicker from "expo-image-picker";
 import { IAluno, useAuth } from "../../../context/auth";
 import { autenticarLogin } from "../../../context/api";
@@ -20,7 +21,7 @@ import MenuInferior from "../../components/MenuInferior";
 import BotaoLogout from "../../components/BotaoLogout";
 import Carregando from "../../components/Carregando";
 
-const userIconSize = 125;
+const userIconSize = 150;
 const imageMode = "cover";
 import { ValidacaoAlunoStrategy } from "../../../strategies/ValidacaoAlunoStrategy";
 export default function Perfil() {
@@ -33,7 +34,7 @@ export default function Perfil() {
   const [novaSenha, setNovaSenha] = useState("");
   const [celular, setCelular] = useState("");
   const [imagem, setImagem] = useState(usuario.imagem);
-  const [mostrarErro, setMostrarErro] = useState(false);
+  const [senhaIncorretaMsg, setSenhaIncorretaMsg] = useState("");
   const [mostrarConteudo, setMostrarConteudo] = useState(true);
   const animRef = useRef<Animatable.View>(null);
 
@@ -47,15 +48,13 @@ export default function Perfil() {
   const [ano, mes, dia] = data.toISOString().split("T")[0].split("-");
   const dataExibida = `${dia}/${mes}/${ano}`;
 
+  const strategy = new ValidacaoAlunoStrategy();
 
-const strategy = new ValidacaoAlunoStrategy();
-
-const validarCampos = () => {
-  const novosErros = strategy.validar(email, senhaAtual, celular);
-  setErros(novosErros);
-  return Object.keys(novosErros).length === 0;
-};
-
+  const validarCampos = () => {
+    const novosErros = strategy.validar(email, senhaAtual, celular);
+    setErros(novosErros);
+    return Object.keys(novosErros).length === 0;
+  };
 
   const selecionarImagem = async () => {
     const resultado = await ImagePicker.launchImageLibraryAsync({
@@ -108,6 +107,7 @@ const validarCampos = () => {
       }, 10);
     } else {
       if (!validarCampos()) return;
+      setSenhaIncorretaMsg(" ");
       setCarregando(true);
       try {
         await autenticarLogin(usuario.login, senhaAtual);
@@ -123,11 +123,12 @@ const validarCampos = () => {
         const usuarioAtualizado = await autenticarLogin(usuario.login, senha);
         setUsuario(usuarioAtualizado);
         setBackupUsuario(usuarioAtualizado);
-        setMostrarErro(false);
+        setSenhaIncorretaMsg("");
         alert("Dados atualizados com sucesso!");
         setEditando(false);
       } catch (erro: any) {
-        if (erro.message === "Erro ao autenticar aluno") setMostrarErro(true);
+        if (erro.message === "Erro ao autenticar aluno")
+          setSenhaIncorretaMsg("❌ Senha incorreta, dados não alterados");
       } finally {
         setCarregando(false);
       }
@@ -266,9 +267,7 @@ const validarCampos = () => {
                         }}
                         keyboardType="email-address"
                       />
-                      {erros.email && (
-                        <Text style={styles.errorText}>{erros.email}</Text>
-                      )}
+                      <Text style={styles.errorText}>{erros.email || " "}</Text>
                     </View>
 
                     <View style={styles.inputGroup}>
@@ -293,9 +292,9 @@ const validarCampos = () => {
                           }));
                         }}
                       />
-                      {erros.senhaAtual && (
-                        <Text style={styles.errorText}>{erros.senhaAtual}</Text>
-                      )}
+                      <Text style={styles.errorText}>
+                        {erros.senhaAtual || " "}
+                      </Text>
                     </View>
 
                     <View style={styles.inputGroup}>
@@ -311,7 +310,7 @@ const validarCampos = () => {
 
                     <View style={styles.inputGroup}>
                       <Text style={styles.label}>Celular*</Text>
-                      <TextInput
+                      <MaskInput
                         style={[
                           styles.inputText,
                           { backgroundColor: "white" },
@@ -322,23 +321,27 @@ const validarCampos = () => {
                         ]}
                         placeholder={backupUsuario.celular}
                         placeholderTextColor={"#aaa"}
-                        defaultValue={usuario.celular}
                         keyboardType="phone-pad"
-                        onChangeText={(text) => {
-                          setCelular(text);
+                        value={celular}
+                        onChangeText={(masked) => {
+                          setCelular(masked);
                           setErros((prev) => ({ ...prev, celular: undefined }));
                         }}
+                        mask={Masks.BRL_PHONE}
                       />
-                      {erros.celular && (
-                        <Text style={styles.errorText}>{erros.celular}</Text>
-                      )}
+                      <Text style={styles.errorText}>
+                        {erros.celular || " "}
+                      </Text>
                     </View>
 
-                    {mostrarErro && (
-                      <Text style={styles.errorText}>
-                        ❌ Senha incorreta, dados não alterados
-                      </Text>
-                    )}
+                    <Text
+                      style={[
+                        styles.errorText,
+                        { marginTop: -10, textAlign: "center" },
+                      ]}
+                    >
+                      {senhaIncorretaMsg || " "}
+                    </Text>
 
                     <View style={{ gap: 10 }}>
                       <TouchableOpacity
@@ -353,7 +356,7 @@ const validarCampos = () => {
                         onPress={() => {
                           setUsuario(backupUsuario);
                           setEditando(false);
-                          setMostrarErro(false);
+                          setSenhaIncorretaMsg("");
                           setMostrarConteudo(false);
                           setImagem(usuario.imagem);
                           setTimeout(() => {
@@ -451,9 +454,9 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "#e53935",
-    textAlign: "center",
+    textAlign: "left",
     fontSize: 14,
-    marginBottom: 10,
+    marginBottom: -10,
   },
   trocarFotoButtons: {
     padding: 10,
