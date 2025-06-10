@@ -1,5 +1,5 @@
 // src/services/aulaService.ts
-import { httpClient } from "../adapters/httpClient";
+import { API_URL, httpClient } from "../adapters/httpClient";
 
 export async function agendarAula(emailAluno: string, data: Date) {
   return await httpClient("/aulas", {
@@ -9,24 +9,7 @@ export async function agendarAula(emailAluno: string, data: Date) {
 }
 
 export async function getHorariosCheios(data: string) {
-  try {
-
-    const resposta = await fetch(`${API_URL}/aulas/horario/${data}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!resposta.ok) {
-      const erro = await resposta.json();
-      throw new Error(erro.message || "Erro ao carregar aulas");
-    }
-
-    const aulasNoHorario = await resposta.json();
-    return aulasNoHorario;
-  } catch (erro: any) {
-    console.error("Erro ao carregar aulas:", erro.message);
-    throw erro;
-  }
+  return await httpClient(`/aulas/horario/${data}`, {
+    method: "GET",
+  });
 }
