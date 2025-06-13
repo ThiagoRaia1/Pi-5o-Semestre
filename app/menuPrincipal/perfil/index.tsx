@@ -20,10 +20,11 @@ import { atualizarUsuario } from "../../../services/apiEditarUsuario";
 import MenuInferior from "../../components/MenuInferior";
 import BotaoLogout from "../../components/BotaoLogout";
 import Carregando from "../../components/Carregando";
+import { ValidacaoAlunoStrategy } from "../../../strategies/ValidacaoAlunoStrategy";
 
 const userIconSize = 150;
 const imageMode = "cover";
-import { ValidacaoAlunoStrategy } from "../../../strategies/ValidacaoAlunoStrategy";
+
 export default function Perfil() {
   const { usuario, setUsuario } = useAuth();
   const [backupUsuario, setBackupUsuario] = useState(usuario);
@@ -103,7 +104,9 @@ export default function Perfil() {
       setEditando(true);
       setTimeout(() => {
         setMostrarConteudo(true);
-        animRef.current?.fadeInUp(1000);
+        if (animRef.current && animRef.current.fadeInUp) {
+          animRef.current.fadeInUp(1000);
+        }
       }, 10);
     } else {
       if (!validarCampos()) return;
@@ -361,7 +364,9 @@ export default function Perfil() {
                           setImagem(usuario.imagem);
                           setTimeout(() => {
                             setMostrarConteudo(true);
-                            animRef.current?.fadeInUp(1000);
+                            if (animRef.current && animRef.current.fadeInUp) {
+                              animRef.current.fadeInUp(1000);
+                            }
                           }, 10);
                         }}
                       >

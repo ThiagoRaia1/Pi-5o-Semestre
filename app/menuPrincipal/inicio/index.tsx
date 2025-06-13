@@ -8,7 +8,7 @@ import BotaoLogout from "../../components/BotaoLogout";
 
 export default function Inicio() {
   const { usuario } = useAuth();
-  const [proximaAula, setProximaAula] = useState<IAula>(null);
+  const [proximaAula, setProximaAula] = useState<IAula | null>(null);
   const [mensagemErro, setMensagemErro] = useState("");
 
   useEffect(() => {

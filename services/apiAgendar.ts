@@ -1,5 +1,5 @@
 // src/services/aulaService.ts
-import { API_URL, httpClient } from "../adapters/httpClient";
+import { httpClient } from "../adapters/httpClient";
 
 export async function agendarAula(emailAluno: string, data: Date) {
   return await httpClient("/aulas", {

@@ -53,7 +53,7 @@ function renderAula(aula: IAula, onCancelar: (aula: IAula) => void) {
 export default function Aulas() {
   const { usuario } = useAuth();
   const [carregando, setCarregando] = useState(false);
-  const [aulas, setAulas] = useState([]);
+  const [aulas, setAulas] = useState<IAula[]>([]);
 
   useEffect(() => {
     const carregarAulas = async () => {
