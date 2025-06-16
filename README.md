@@ -1,3 +1,9 @@
+<p align="center">
+  Usuário teste:<br>
+  Login: teste@gmail.com<br>
+  Senha: LoginTeste!1
+</p>
+
 <h1 align="center">Plenitude Pilates</h1>
 
 <p align="center">
